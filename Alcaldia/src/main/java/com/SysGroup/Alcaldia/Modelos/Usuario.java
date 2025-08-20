@@ -13,10 +13,6 @@ public class Usuario {
 
     private String contrasena;
 
-    @ManyToOne
-    @JoinColumn(name = "id_ciudadano")
-    private Ciudadano id_ciudadano;
-
     // Getters and Setters
     public Integer getId_login() {
         return id_login;
@@ -36,12 +32,7 @@ public class Usuario {
     public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
-    public Ciudadano getId_ciudadano() {
-        return id_ciudadano;
-    }
-    public void setId_ciudadano(Ciudadano id_ciudadano) {
-        this.id_ciudadano = id_ciudadano;
-    }
+    
     
 
 }

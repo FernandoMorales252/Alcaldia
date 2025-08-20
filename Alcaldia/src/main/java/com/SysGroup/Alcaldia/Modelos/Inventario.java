@@ -18,10 +18,6 @@ public class Inventario {
     private EstadoInventario estado;
 
     @ManyToOne
-    @JoinColumn(name = "id_tipo_inmueble")
-    private Tipos_de_inmueble id_tipo_inmueble;
-
-    @ManyToOne
     @JoinColumn(name = "id_municipio")
     private Municipio id_municipio;
 
@@ -54,12 +50,6 @@ public class Inventario {
     }
     public void setEstado(EstadoInventario estado) {
         this.estado = estado;
-    }
-    public Tipos_de_inmueble getId_tipo_inmueble() {
-        return id_tipo_inmueble;
-    }
-    public void setId_tipo_inmueble(Tipos_de_inmueble id_tipo_inmueble) {
-        this.id_tipo_inmueble = id_tipo_inmueble;
     }
     public Municipio getId_municipio() {
         return id_municipio;

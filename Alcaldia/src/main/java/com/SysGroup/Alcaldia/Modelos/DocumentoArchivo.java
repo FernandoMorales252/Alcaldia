@@ -5,7 +5,7 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Documento")
-public class Documento {
+public class DocumentoArchivo {
      @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_documento;
@@ -17,11 +17,11 @@ public class Documento {
 
     @ManyToOne
     @JoinColumn(name = "id_tipo_documento")
-    private Tipo_documento id_tipo_documento;
+    private Tipo_DocumentoArchivo id_tipo_documento;
 
     @ManyToOne
     @JoinColumn(name = "id_ciudadano")
-    private Ciudadano id_ciudadano;
+    
 
     // Getters and Setters
     public Integer getId_documento() {
@@ -42,18 +42,13 @@ public class Documento {
     public void setFecha_emision(Date fecha_emision) {
         this.fecha_emision = fecha_emision;
     }
-    public Tipo_documento getId_tipo_documento() {
+    public Tipo_DocumentoArchivo getId_tipo_documento() {
         return id_tipo_documento;
     }
-    public void setId_tipo_documento(Tipo_documento id_tipo_documento) {
+    public void setId_tipo_documento(Tipo_DocumentoArchivo id_tipo_documento) {
         this.id_tipo_documento = id_tipo_documento;
     }
-    public Ciudadano getId_ciudadano() {
-        return id_ciudadano;
-    }
-    public void setId_ciudadano(Ciudadano id_ciudadano) {
-        this.id_ciudadano = id_ciudadano;
-    }
+   
     
 
 }

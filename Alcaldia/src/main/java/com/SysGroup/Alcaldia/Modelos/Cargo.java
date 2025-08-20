@@ -2,7 +2,7 @@ package com.SysGroup.Alcaldia.Modelos;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "Cargo")
+@Table(name = "cargo")
 public class Cargo {
 
     @Id

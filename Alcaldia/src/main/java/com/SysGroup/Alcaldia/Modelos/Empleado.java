@@ -1,9 +1,9 @@
 package com.SysGroup.Alcaldia.Modelos;
 import jakarta.persistence.*;
-
+import java.util.Date;
 
 @Entity
-@Table(name = "Empleado")
+@Table(name = "empleado")
 public class Empleado {
      @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -11,12 +11,8 @@ public class Empleado {
 
     private String nombre;
     private String apellido;
-    private String direccion;
-    private String telefono;
-    private String correo_electronico;
-
-    @Enumerated(EnumType.STRING)
-    private EstadoEmpleado estado;
+    private Date fecha_contratacion;
+    private int estado;
 
     @ManyToOne
     @JoinColumn(name = "id_cargo")
@@ -50,28 +46,16 @@ public class Empleado {
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
-    public String getDireccion() {
-        return direccion;
+    public Date getFecha_contratacion() {
+        return fecha_contratacion;
     }
-    public void setDireccion(String direccion) {
-        this.direccion = direccion;
+    public void setFecha_contratacion(Date fecha_contratacion) {
+        this.fecha_contratacion = fecha_contratacion;
     }
-    public String getTelefono() {
-        return telefono;
-    }
-    public void setTelefono(String telefono) {
-        this.telefono = telefono;
-    }
-    public String getCorreo_electronico() {
-        return correo_electronico;
-    }
-    public void setCorreo_electronico(String correo_electronico) {
-        this.correo_electronico = correo_electronico;
-    }
-    public EstadoEmpleado getEstado() {
+    public int getEstado() {
         return estado;
     }
-    public void setEstado(EstadoEmpleado estado) {
+    public void setEstado(int estado) {
         this.estado = estado;
     }
     public Cargo getId_cargo() {
@@ -86,6 +70,4 @@ public class Empleado {
     public void setId_municipio(Municipio id_municipio) {
         this.id_municipio = id_municipio;
     }
-
-
 }

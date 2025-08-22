@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import org.springframework.stereotype.Service;
 
 import com.SysGroup.Alcaldia.Servicios.Interfaces.ICargoService;
@@ -16,33 +15,32 @@ import com.SysGroup.Alcaldia.Repositorios.ICargoRepository;
 @Service
 public class CargoService  implements ICargoService{
 
-
-     @Autowired
+    @Autowired
     private ICargoRepository cargoRepository;
     
     @Override
     public Page<Cargo> buscarTodos(Pageable pageable){
-        return cargoRepository.findAll(pageable);
+    return cargoRepository.findAll(pageable);
     }
 
     @Override
     public   List<Cargo> obtenerTodos(){
-       return  cargoRepository.findAll();
+    return  cargoRepository.findAll();
     }
 
     @Override
-    public Optional<Cargo>  buscarPorId(Integer id){
-        return cargoRepository.findById(id);
+    public Optional<Cargo>  buscarPorId(Integer id_cargo){
+        return cargoRepository.findById(id_cargo);
     }
 
     @Override
     public  Cargo crearOeditar(Cargo cargo){
-        return cargoRepository.save(cargo);
+    return cargoRepository.save(cargo);
     }
     
      @Override
-    public  void eliminarPorId(Integer id){
-        cargoRepository.deleteById(id);
+    public  void eliminarPorId(Integer id_cargo){
+    cargoRepository.deleteById(id_cargo);
     }
 
 }

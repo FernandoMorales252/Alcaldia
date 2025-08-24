@@ -15,10 +15,10 @@ public interface ICargoService {
 
     List<Cargo> obtenerTodos();
 
-    Optional<Cargo>  buscarPorId(Integer id);
+    Optional<Cargo>  buscarPorId(Integer id_cargo);
 
     Cargo crearOeditar(Cargo cargo);
 
-    void eliminarPorId(Integer id);
+    void eliminarPorId(Integer id_cargo);
 
 }

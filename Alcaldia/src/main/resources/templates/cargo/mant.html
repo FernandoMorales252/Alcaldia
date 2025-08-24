@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_MainLayout}">
+<head>
+    <title layout:fragment="title" th:text="'Cargo - ' + ${action}">Cargo</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <h2 th:text="${action == 'create' ? 'Crear nuevo cargo' :
+                  action == 'edit' ? 'Editar cargo' :
+                  action == 'view' ? 'Ver cargo' :
+                  action == 'delete' ? 'Eliminar cargo' : 'Cargo'}"></h2>
+
+    <form th:action="@{${action == 'create' ? '/cargo/create' :
+                      action == 'edit' ? '/cargo/edit' :
+                      action == 'delete' ? '/cargo/delete' : '#'}}"
+          th:object="${cargo}" method="post">
+
+        <input type="hidden" th:if="${cargo.id_cargo != null}" th:field="*{id_cargo}" />
+
+        <div class="mb-3">
+            <label for="nombre_cargo" class="form-label">Nombre</label>
+            <input type="text" th:field="*{nombre_cargo}" id="nombre_cargo" class="form-control"
+                   th:attr="readonly=${action=='view' or action=='delete'}" />
+            <div class="text-danger" th:if="${#fields.hasErrors('nombre_cargo')}" th:errors="*{nombre_cargo}"></div>
+        </div>
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <input type="text" th:field="*{descripcion}" id="descripcion" class="form-control"
+                   th:attr="readonly=${action=='view' or action=='delete'}" />
+            <div class="text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div> <!-- CORRECCIÓN: Paréntesis cerrando en 'descripcion' -->
+        </div>
+
+        <div th:if="${action != 'view'}" class="mb-3">
+            <button type="submit"
+                    th:text="${action == 'delete' ? 'Confirmar Eliminación' : 'Guardar'}"
+                    class="btn"
+                    th:classappend="${action == 'delete' ? 'btn-danger' : 'btn-primary'}"></button>
+            <a th:href="@{/cargo}" class="btn btn-secondary">Cancelar</a>
+        </div>
+
+        <div th:if="${action == 'view'}" class="mb-3">
+            <a th:href="@{/cargo}" class="btn btn-secondary">Regresar</a>
+        </div>
+
+    </form>
+</section>
+</body>
+</html>

@@ -48,7 +48,7 @@ public class CargoController {
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
-        return "grupo/index";
+        return "cargo/index";
     }
 
      // ----------- Crear --------------
@@ -60,7 +60,7 @@ public class CargoController {
     }
     // ----------- Editar --------------
     @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Integer id_cargo, Model model) {
+    public String edit(@PathVariable("id") Integer id_cargo, Model model) {
         Cargo cargo = cargoService.buscarPorId(id_cargo).orElseThrow();
         model.addAttribute("cargo", cargo);
         model.addAttribute("action", "edit");
@@ -69,7 +69,7 @@ public class CargoController {
 
     // ----------- Ver (solo lectura) --------------
     @GetMapping("/view/{id}")
-    public String view(@PathVariable Integer id_cargo, Model model) {
+    public String view(@PathVariable("id") Integer id_cargo, Model model) {
         Cargo cargo = cargoService.buscarPorId(id_cargo).orElseThrow();
         model.addAttribute("cargo", cargo);
         model.addAttribute("action", "view");
@@ -78,7 +78,7 @@ public class CargoController {
 
     // ----------- Eliminar (confirmación) --------------
     @GetMapping("/delete/{id}")
-    public String deleteConfirm(@PathVariable Integer id_cargo, Model model) {
+    public String deleteConfirm(@PathVariable("id") Integer id_cargo, Model model) {
         Cargo cargo = cargoService.buscarPorId(id_cargo).orElseThrow();
         model.addAttribute("cargo", cargo);
         model.addAttribute("action", "delete");

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_MainLayout}">
+<head>
+    <title layout:fragment="title">Listado de tipos de archivo</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div th:if="${msg != null }">
+        <script>
+            swal({
+            title:"Confirmación",
+            text: '[[ ${msg} ]]',
+            icon: "success"
+            });
+        </script>
+    </div>
+    <div th:if="${error != null }">
+        <script>
+            swal({
+            title:"Error",
+            text: '[[ ${error} ]]',
+            icon: "error"
+            });
+        </script>
+    </div>
+
+    <h2>Listado de tipos de archivo</h2>
+
+    <div class="mb-3">
+        <a th:href="@{/tipodocumentoarchivo/create}" class="btn btn-success">Nuevo Tipo de Archivo</a>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+<tr th:each="tipodocumentoarchivo : ${tipoDocumentos.content}">
+    <td th:text="${tipodocumentoarchivo.nombre_tipo}">Nombre</td>
+    <td>
+        <a th:href="@{/tipodocumentoarchivo/view/{id}(id=${tipodocumentoarchivo.id_tipo_documento})}" class="btn btn-info btn-sm">Ver</a>
+        <a th:href="@{/tipodocumentoarchivo/edit/{id}(id=${tipodocumentoarchivo.id_tipo_documento})}" class="btn btn-warning btn-sm">Editar</a>
+        <a th:href="@{/tipodocumentoarchivo/delete/{id}(id=${tipodocumentoarchivo.id_tipo_documento})}" class="btn btn-danger btn-sm">Eliminar</a>
+    </td>
+</tr>
+<tr th:if="${tipoDocumentos.totalElements == 0}">
+    <td colspan="6" class="text-center">No hay tipos de archivo registrados.</td>
+</tr>
+</tbody>
+    </table>
+
+  <nav th:if="${pageNumbers}">
+    <ul class="pagination justify-content-center">
+        <li th:each="pageNum : ${pageNumbers}" class="page-item"
+            th:classappend="${pageNum == tipoDocumentos.number + 1} ? 'active'">
+            <a class="page-link"
+               th:href="@{/tipodocumentoarchivo(page=${pageNum},size=${tipoDocumentos.size})}"
+               th:text="${pageNum}"></a>
+        </li>
+    </ul>
+</nav>
+
+</section>
+</body>
+</html>

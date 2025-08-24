@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-AlcaldiaApplication<Alcaldia>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "com.SysGroup.Alcaldia.AlcaldiaApplication",
+            "projectName": "Alcaldia",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}

@@ -10,6 +10,7 @@ public class Tipo_DocumentoArchivo {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Integer id_tipo_documento;
     
+    
     private String nombre_tipo;
     
 

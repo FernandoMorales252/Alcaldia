@@ -10,7 +10,8 @@ public class DocumentoArchivo {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_documento;
 
-    private String numero_documento;
+    @Column(name = "numero_documento")
+    private String numerodocumento;
 
     @Temporal(TemporalType.DATE)
     private Date fecha_emision;
@@ -37,10 +38,10 @@ public class DocumentoArchivo {
         this.id_documento = id_documento;
     }
     public String getNumero_documento() {
-        return numero_documento;
+        return numerodocumento;
     }
     public void setNumero_documento(String numero_documento) {
-        this.numero_documento = numero_documento;
+        this.numerodocumento = numero_documento;
     }
     public Date getFecha_emision() {
         return fecha_emision;

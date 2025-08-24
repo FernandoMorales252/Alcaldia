@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_MainLayout}">
+<head>
+    <title layout:fragment="title" th:text="'tipodocumentoarchivo - ' + ${action}">Tipo de documento archivo</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <h2 th:text="${action == 'create' ? 'Crear tipo de documento archivo' : 
+                  action == 'edit' ? 'Editar tipo de documento archivo' : 
+                  action == 'view' ? 'Ver tipo de documento archivo' : 
+                  action == 'delete' ? 'Eliminar tipo de documento archivo' : 'tipo de documento archivo'}"></h2>
+
+    <form th:action="@{${action == 'create' ? '/tipodocumentoarchivo/create' : 
+                      action == 'edit' ? '/tipodocumentoarchivo/edit' : 
+                      action == 'delete' ? '/tipodocumentoarchivo/delete' : '#'}}" 
+          th:object="${tipoDocumento}" method="post">
+
+        <input type="hidden" th:if="${tipoDocumento.id_tipo_documento != null}" th:field="*{id_tipo_documento}" />
+
+        <div class="mb-3">
+            <label for="nombre_tipo" class="form-label">Nombre</label>
+            <input type="text" th:field="*{nombre_tipo}" id="nombre_tipo" class="form-control" 
+                   th:attr="readonly=${action=='view' or action=='delete'}" />
+            <div class="text-danger" th:if="${#fields.hasErrors('nombre_tipo')}" th:errors="*{nombre_tipo}"></div>
+        </div>
+
+        <div th:if="${action != 'view'}" class="mb-3">
+            <button type="submit" 
+                    th:text="${action == 'delete' ? 'Confirmar Eliminación' : 'Guardar'}" 
+                    class="btn" 
+                    th:classappend="${action == 'delete' ? 'btn-danger' : 'btn-primary'}"></button>
+            <a th:href="@{/tipodocumentoarchivo}" class="btn btn-secondary">Cancelar</a>
+        </div>
+
+        <div th:if="${action == 'view'}" class="mb-3">
+            <a th:href="@{/tipodocumentoarchivo}" class="btn btn-secondary">Regresar</a>
+        </div>
+
+    </form>
+</section>
+</body>
+</html>

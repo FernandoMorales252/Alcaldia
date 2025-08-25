@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -23,6 +24,7 @@ import com.SysGroup.Alcaldia.Servicios.Implementaciones.MunicipioService;
 import com.SysGroup.Alcaldia.Servicios.Implementaciones.Tipo_DocumentoArchivoService;
 
 @Controller
+@RequestMapping("/documentos")
 public class DocumentoArchivoController {
 
     @Autowired
@@ -34,42 +36,42 @@ public class DocumentoArchivoController {
     @Autowired
     private MunicipioService municipioService;
 
-     @GetMapping
-    public String index(Model model,
-                        @RequestParam("page") Optional<Integer> page,
-                        @RequestParam( "size") Optional<Integer> size) {
-        int currentPage = page.orElse(1) - 1;
-        int pageSize = size.orElse(5);
-        Pageable pageable = PageRequest.of(currentPage, pageSize);    
+    @GetMapping
+public String index(Model model,
+                    @RequestParam("page") Optional<Integer> page,
+                    @RequestParam("size") Optional<Integer> size) {
+    int currentPage = page.orElse(1) - 1;
+    int pageSize = size.orElse(5);
+    Pageable pageable = PageRequest.of(currentPage, pageSize);    
 
-        Page<DocumentoArchivo> documento = documentoArchivoService.buscarTodosPaginados(pageable);
-        model.addAttribute("documento", documento);
+    Page<DocumentoArchivo> documento = documentoArchivoService.buscarTodosPaginados(pageable);
+    model.addAttribute("documento", documento);
 
-        int totalPages = documento.getTotalPages();
-        if (totalPages > 0) {
-            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
-            model.addAttribute("pageNumbers", pageNumbers);
-
-        }
-        return "documento/Index";
+    int totalPages = documento.getTotalPages();
+    if (totalPages > 0) {
+        List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                .boxed()
+                .collect(Collectors.toList());
+        model.addAttribute("pageNumbers", pageNumbers);
     }
+    return "documento/index"; 
+}
 
     // crear
-    @GetMapping("/create")
-    public String create(Model model) {
-        model.addAttribute("documento", new DocumentoArchivo());
-        model.addAttribute("municipio", municipioService.obtenerTodosLosMunicipios());
-        model.addAttribute("tipoDocumento", tipoDocumentoArchivoService.obtenerTodos());
-        return "documento/mant";
-    }
+   @GetMapping("/create")
+public String create(Model model) {
+    model.addAttribute("documentoArchivo", new DocumentoArchivo());
+    model.addAttribute("action", "create");
+    model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
+    model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+    return "documento/mant";
+}
  
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
        DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
          model.addAttribute("documentoArchivo", documentoArchivo);
-         model.addAttribute("tipos_documentos", documentoArchivoService.obtenerTodos());
+         model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
          model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
          model.addAttribute("action", "edit");
          return "documento/mant";
@@ -80,7 +82,7 @@ public class DocumentoArchivoController {
     public String view(@PathVariable Integer id, Model model) {
         DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
         model.addAttribute("documentoArchivo", documentoArchivo);
-        model.addAttribute("tipos_documentos", documentoArchivoService.obtenerTodos());
+        model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
         model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
         model.addAttribute("action", "view");
         return "documento/mant";
@@ -91,7 +93,7 @@ public class DocumentoArchivoController {
     public String deleteConfirm(@PathVariable Integer id, Model model) {
       DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
       model.addAttribute("documentoArchivo", documentoArchivo);
-      model.addAttribute("tipos_documentos", documentoArchivoService.obtenerTodos());
+      model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
       model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
       model.addAttribute("action", "delete");
       return "documento/mant";
@@ -102,7 +104,7 @@ public class DocumentoArchivoController {
     public String saveNuevo(@ModelAttribute DocumentoArchivo documentoArchivo , BindingResult result
     , RedirectAttributes redirect , Model model) {
        if (result.hasErrors()) {
-           model.addAttribute("tipos_documentos", documentoArchivoService.obtenerTodos());
+           model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
            model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
            model.addAttribute("action", "create");
            return "documento/mant";
@@ -116,7 +118,7 @@ public class DocumentoArchivoController {
     public String saveEdit(@ModelAttribute DocumentoArchivo documentoArchivo , BindingResult result
     , RedirectAttributes redirect , Model model) {
        if (result.hasErrors()) {
-           model.addAttribute("tipos_documentos", documentoArchivoService.obtenerTodos());
+           model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
            model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
            model.addAttribute("action", "edit");
            return "documento/mant";
@@ -129,7 +131,7 @@ public class DocumentoArchivoController {
     @PostMapping("delete")
     public String deleteDocumentoArchivo(@ModelAttribute DocumentoArchivo documentoArchivo ,
     RedirectAttributes redirect ) {
-       documentoArchivoService.eliminarPorId(documentoArchivo.getId_documento());
+       documentoArchivoService.eliminarPorId(documentoArchivo.getIdDocumento());
        redirect.addFlashAttribute("msg", "documento eliminado correctamente");
 
         return "redirect:/documentos";

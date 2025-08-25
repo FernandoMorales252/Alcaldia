@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_MainLayout}">
+<head>
+    <title layout:fragment="title">Listado de Asignaciones</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div th:if="${msg != null }">
+        <script>
+            swal({
+            title:"Confirmación",
+            text: '[[ ${msg} ]]',
+            icon: "success"
+            });
+        </script>
+    </div>
+    <div th:if="${error != null }">
+        <script>
+            swal({
+            title:"Error",
+            text: '[[ ${error} ]]',
+            icon: "error"
+            });
+        </script>
+    </div>
+
+    <h2>Listado de documentos</h2>
+
+    <div class="mb-3">
+        <a th:href="@{/documentos/create}" class="btn btn-success">Nuevo Documento</a>
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>Numero de Documento</th>
+            <th>Propietario</th>
+            <th>Detalles</th>
+            <th>Estado</th>
+            <th>Fecha Emisión</th>
+            <th>Municipio</th>
+            <th>Tipo</th>
+        </tr>
+        </thead>
+      <tbody>
+<tr th:each="doc : ${documento.content}">
+    <td th:text="${doc.numerodocumento}">Número de Documento</td>
+    <td th:text="${doc.nombre_persona}">Propietario</td>
+    <td th:text="${doc.detalles}">Detalles</td>
+    <td th:text="${doc.estado == 1 ? 'Activo' : 'Inactivo'}">Estado</td>
+    <td th:text="${#dates.format(doc.fecha_emision, 'dd/MM/yyyy')}">Fecha Emisión</td>
+    <td th:text="${doc.id_municipio != null ? doc.id_municipio.nombre : '-'}">Municipio</td>
+    <td th:text="${doc.id_tipo_documento != null ? doc.id_tipo_documento.nombre_tipo : '-'}">Tipo</td>
+    <td>
+        <a th:href="@{/documentos/view/{id}(id=${doc.id_documento})}" class="btn btn-info btn-sm">Ver</a>
+        <a th:href="@{/documentos/edit/{id}(id=${doc.id_documento})}" class="btn btn-warning btn-sm">Editar</a>
+        <a th:href="@{/documentos/delete/{id}(id=${doc.id_documento})}" class="btn btn-danger btn-sm">Eliminar</a>
+    </td>
+</tr>
+<tr th:if="${documento.totalElements == 0}">
+    <td colspan="8" class="text-center">No hay documentos registrados.</td>
+</tr>
+</tbody>
+    </table>
+
+    <nav th:if="${pageNumbers}">
+        <ul class="pagination justify-content-center">
+            <li th:each="pageNum : ${pageNumbers}" class="page-item"
+                th:classappend="${pageNum == documento.number + 1} ? 'active'">
+                <a class="page-link" th:href="@{/documentos(page=${pageNum}, size=${documento.size})}" th:text="${pageNum}"></a>
+            </li>
+        </ul>
+    </nav>
+
+</section>
+</body>
+</html>

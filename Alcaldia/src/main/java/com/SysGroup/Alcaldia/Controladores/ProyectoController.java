@@ -1,0 +1,124 @@
+package com.SysGroup.Alcaldia.Controladores;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import com.SysGroup.Alcaldia.Modelos.Proyecto;
+import com.SysGroup.Alcaldia.Servicios.Implementaciones.MunicipioService;
+import com.SysGroup.Alcaldia.Servicios.Implementaciones.ProyectoService;
+
+
+public class ProyectoController {
+     @Autowired
+    private ProyectoService proyectoService;
+
+    @Autowired
+    private MunicipioService municipioService;
+
+    @GetMapping
+    public String index(Model model,
+                        @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size) {
+        int currentPage = page.orElse(1) - 1;
+        int pageSize = size.orElse(5);
+        Pageable pageable = PageRequest.of(currentPage, pageSize);    
+
+        Page<Proyecto> proyecto = proyectoService.buscarTodosPaginados(pageable);
+        model.addAttribute("proyecto", proyecto);
+
+        int totalPages = proyecto.getTotalPages();
+        if (totalPages > 0) {
+            List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
+                    .boxed()
+                    .collect(Collectors.toList());
+            model.addAttribute("pageNumbers", pageNumbers);
+        }
+        return "proyecto/Index";
+    }
+
+    // crear
+    @GetMapping("/create")
+    public String create(Model model) {
+        model.addAttribute("proyecto", new Proyecto());
+        model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+        return "proyecto/mant";
+    }
+ 
+    @GetMapping("/edit/{id}")
+    public String edit(@PathVariable Integer id, Model model) {
+        Proyecto proyecto = proyectoService.buscarPorId(id);
+        model.addAttribute("proyecto", proyecto);
+        model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+        model.addAttribute("action", "edit");
+        return "proyecto/mant";
+    }
+
+    //--Lectura--//
+    @GetMapping("/view/{id}")
+    public String view(@PathVariable Integer id, Model model) {
+        Proyecto proyecto = proyectoService.buscarPorId(id);
+        model.addAttribute("proyecto", proyecto);
+        model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+        model.addAttribute("action", "view");
+        return "proyecto/mant";
+    }
+
+    //--eliminar--//
+    @GetMapping("/delete/{id}")
+    public String deleteConfirm(@PathVariable Integer id, Model model) {
+        Proyecto proyecto = proyectoService.buscarPorId(id);
+        model.addAttribute("proyecto", proyecto);
+        model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+        model.addAttribute("action", "delete");
+        return "proyecto/mant";
+    }
+
+    //--procesar post segun accion--//
+    @PostMapping("/create")
+    public String saveNuevo(@ModelAttribute Proyecto proyecto, BindingResult result,
+                           RedirectAttributes redirect, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+            model.addAttribute("action", "create");
+            return "proyecto/mant";
+        }
+        proyectoService.crearOEditar(proyecto);
+        redirect.addFlashAttribute("mensaje", "El proyecto se ha creado correctamente.");
+        return "redirect:/proyectos";
+    }
+
+    @PostMapping("/edit")
+    public String saveEdit(@ModelAttribute Proyecto proyecto, BindingResult result,
+                          RedirectAttributes redirect, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+            model.addAttribute("action", "edit");
+            return "proyecto/mant";
+        }
+        proyectoService.crearOEditar(proyecto);
+        redirect.addFlashAttribute("mensaje", "El proyecto se ha editado correctamente.");
+        return "redirect:/proyectos";
+    }
+
+    @PostMapping("/delete")
+    public String deleteProyecto(@ModelAttribute Proyecto proyecto,
+                                RedirectAttributes redirect) {
+        proyectoService.eliminarPorId(proyecto.getId_proyecto());
+        redirect.addFlashAttribute("msg", "Proyecto eliminado correctamente");
+        return "redirect:/proyectos";
+    }
+
+}

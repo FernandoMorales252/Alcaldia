@@ -1,5 +1,6 @@
 package com.SysGroup.Alcaldia.Controladores;
 
+import java.beans.PropertyEditorSupport;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -10,7 +11,9 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.GetMapping;
+
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +38,7 @@ public class DocumentoArchivoController {
 
     @Autowired
     private MunicipioService municipioService;
+
 
     @GetMapping
 public String index(Model model,

@@ -57,8 +57,7 @@ public String index(Model model,
     return "documento/index"; 
 }
 
-    // crear
-   @GetMapping("/create")
+@GetMapping("/create")
 public String create(Model model) {
     model.addAttribute("documentoArchivo", new DocumentoArchivo());
     model.addAttribute("action", "create");
@@ -66,76 +65,72 @@ public String create(Model model) {
     model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
     return "documento/mant";
 }
- 
-    @GetMapping("/edit/{id}")
-    public String edit(@PathVariable Integer id, Model model) {
-       DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
-         model.addAttribute("documentoArchivo", documentoArchivo);
-         model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
-         model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
-         model.addAttribute("action", "edit");
-         return "documento/mant";
-    }
 
-    //--Lectura--//
-    @GetMapping("/view/{id}")
-    public String view(@PathVariable Integer id, Model model) {
-        DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
-        model.addAttribute("documentoArchivo", documentoArchivo);
+@GetMapping("/edit/{id}")
+public String edit(@PathVariable Integer id, Model model) {
+    DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
+    model.addAttribute("documentoArchivo", documentoArchivo);
+    model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
+    model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+    model.addAttribute("action", "edit");
+    return "documento/mant";
+}
+
+@GetMapping("/view/{id}")
+public String view(@PathVariable Integer id, Model model) {
+    DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
+    model.addAttribute("documentoArchivo", documentoArchivo);
+    model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
+    model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+    model.addAttribute("action", "view");
+    return "documento/mant";
+}
+
+@GetMapping("/delete/{id}")
+public String deleteConfirm(@PathVariable Integer id, Model model) {
+    DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
+    model.addAttribute("documentoArchivo", documentoArchivo);
+    model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
+    model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+    model.addAttribute("action", "delete");
+    return "documento/mant";
+}
+
+@PostMapping("/create")
+public String saveNuevo(@ModelAttribute DocumentoArchivo documentoArchivo, BindingResult result,
+                        RedirectAttributes redirect, Model model) {
+    if (result.hasErrors()) {
         model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
         model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
-        model.addAttribute("action", "view");
+        model.addAttribute("action", "create");
         return "documento/mant";
     }
+    documentoArchivoService.crearOEditar(documentoArchivo);
+    redirect.addFlashAttribute("mensaje", "La asignación se ha creado correctamente.");
+    return "redirect:/documentos";
+}
 
-    //--eliminar--//
-    @GetMapping("/delete/{id}")
-    public String deleteConfirm(@PathVariable Integer id, Model model) {
-      DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
-      model.addAttribute("documentoArchivo", documentoArchivo);
-      model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
-      model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
-      model.addAttribute("action", "delete");
-      return "documento/mant";
+@PostMapping("/edit")
+public String saveEdit(@ModelAttribute DocumentoArchivo documentoArchivo, BindingResult result,
+                       RedirectAttributes redirect, Model model) {
+    if (result.hasErrors()) {
+        model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
+        model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+        model.addAttribute("action", "edit");
+        return "documento/mant";
     }
+    documentoArchivoService.crearOEditar(documentoArchivo);
+    redirect.addFlashAttribute("mensaje", "La asignación se ha editado correctamente.");
+    return "redirect:/documentos";
+}
 
-    //--procesar post segun accion--//
-    @PostMapping("/create")
-    public String saveNuevo(@ModelAttribute DocumentoArchivo documentoArchivo , BindingResult result
-    , RedirectAttributes redirect , Model model) {
-       if (result.hasErrors()) {
-           model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
-           model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
-           model.addAttribute("action", "create");
-           return "documento/mant";
-       }
-       documentoArchivoService.crearOEditar(documentoArchivo);
-       redirect.addFlashAttribute("mensaje", "La asignación se ha creado correctamente.");
-       return "redirect:/documentos";
-    }
-
-    @PostMapping ("/edit")
-    public String saveEdit(@ModelAttribute DocumentoArchivo documentoArchivo , BindingResult result
-    , RedirectAttributes redirect , Model model) {
-       if (result.hasErrors()) {
-           model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
-           model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
-           model.addAttribute("action", "edit");
-           return "documento/mant";
-       }
-       documentoArchivoService.crearOEditar(documentoArchivo);
-       redirect.addFlashAttribute("mensaje", "La asignación se ha editado correctamente.");
-       return "redirect:/documentos";
-    }
-
-    @PostMapping("delete")
-    public String deleteDocumentoArchivo(@ModelAttribute DocumentoArchivo documentoArchivo ,
-    RedirectAttributes redirect ) {
-       documentoArchivoService.eliminarPorId(documentoArchivo.getIdDocumento());
-       redirect.addFlashAttribute("msg", "documento eliminado correctamente");
-
-        return "redirect:/documentos";
-    }
+@PostMapping("/delete")
+public String deleteDocumentoArchivo(@ModelAttribute DocumentoArchivo documentoArchivo,
+                                    RedirectAttributes redirect) {
+    documentoArchivoService.eliminarPorId(documentoArchivo.getIdDocumento());
+    redirect.addFlashAttribute("msg", "Documento eliminado correctamente");
+    return "redirect:/documentos";
+}
 
 
 }

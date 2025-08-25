@@ -65,7 +65,7 @@
                 <option value="">Seleccione municipio</option>
                 <option th:each="mun : ${municipios}" 
                         th:value="${mun}" 
-                        th:text="${mun.nombreMunicipio}">
+                        th:text="${mun.nombre_municipio}">
                 </option>
             </select>
         </div>
@@ -75,7 +75,7 @@
             <label for="tipoDocumento" class="form-label">Tipo de documento</label>
             <select th:field="*{tipoDocumento}" id="tipoDocumento" class="form-select"
                     th:disabled="${action=='view' or action=='delete'}">
-                <option value="">Seleccione tipo</option>
+                <option value="">Seleccione tipo de documento</option>
                 <option th:each="tipo : ${tipos_documentos}" 
                         th:value="${tipo}" 
                         th:text="${tipo.nombre_tipo}">

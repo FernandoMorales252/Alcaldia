@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_MainLayout}">
+<head>
+    <title layout:fragment="title" th:text="'Municipio - ' + ${action}">Municipio</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <h2 th:text="${action == 'create' ? 'Crear nuevo municipio' :
+                  action == 'edit' ? 'Editar municipio' :
+                  action == 'view' ? 'Ver municipio' :
+                  action == 'delete' ? 'Eliminar municipio' : 'Municipio'}"></h2>
+
+    <form th:action="@{${action == 'create' ? '/municipios/create' :
+                      action == 'edit' ? '/municipios/edit' :
+                      action == 'delete' ? '/municipios/delete' : '#'}}"
+          th:object="${municipio}" method="post">
+
+        <input type="hidden" th:if="${municipio.id_municipio != null}" th:field="*{id_municipio}" />
+
+        <div class="mb-3">
+            <label for="nombre_municipio" class="form-label">Nombre del Municipio</label>
+            <input type="text" th:field="*{nombre_municipio}" id="nombre_municipio" class="form-control"
+                   th:attr="readonly=${action=='view' or action=='delete'}" />
+            <div class="text-danger" th:if="${#fields.hasErrors('nombre_municipio')}" th:errors="*{nombre_municipio}"></div>
+        </div>
+
+        <div th:if="${action != 'view'}" class="mb-3">
+            <button type="submit"
+                    th:text="${action == 'delete' ? 'Confirmar Eliminación' : 'Guardar'}"
+                    class="btn"
+                    th:classappend="${action == 'delete' ? 'btn-danger' : 'btn-primary'}"></button>
+            <a th:href="@{/municipios}" class="btn btn-secondary">Cancelar</a>
+        </div>
+
+        <div th:if="${action == 'view'}" class="mb-3">
+            <a th:href="@{/municipios}" class="btn btn-secondary">Regresar</a>
+        </div>
+
+    </form>
+</section>
+</body>
+</html>

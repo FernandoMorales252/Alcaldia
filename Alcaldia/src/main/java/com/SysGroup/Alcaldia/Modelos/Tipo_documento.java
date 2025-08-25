@@ -34,4 +34,5 @@ public class Tipo_documento {
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
     }
+}
 

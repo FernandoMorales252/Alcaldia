@@ -45,49 +45,41 @@ public class MunicipioController {
                     .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-        return "municipio/Index";
+        return "municipio/index";
     }
 
     // crear
     @GetMapping("/create")
     public String create(Model model) {
-        model.addAttribute("municipio", new Municipio());
-        return "municipio/mant";
+       model.addAttribute("municipio", new Municipio());
+       model.addAttribute("action", "create");
+       return "municipio/mant";
     }
  
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
-        Optional<Municipio> municipio = municipioService.buscaPorId(id);
-        if (municipio.isPresent()) {
-            model.addAttribute("municipio", municipio.get());
-            model.addAttribute("action", "edit");
-            return "municipio/mant";
-        }
-        return "redirect:/municipios";
+        Municipio municipio = municipioService.buscaPorId(id).orElseThrow();
+        model.addAttribute("municipio", municipio);
+        model.addAttribute("action", "edit");
+        return "municipio/mant";
     }
 
     //--Lectura--//
     @GetMapping("/view/{id}")
     public String view(@PathVariable Integer id, Model model) {
-        Optional<Municipio> municipio = municipioService.buscaPorId(id);
-        if (municipio.isPresent()) {
-            model.addAttribute("municipio", municipio.get());
-            model.addAttribute("action", "view");
-            return "municipio/mant";
-        }
-        return "redirect:/municipios";
+        Municipio municipio = municipioService.buscaPorId(id).orElseThrow();
+        model.addAttribute("municipio", municipio);
+        model.addAttribute("action", "view");
+        return "municipio/mant";
     }
 
     //--eliminar--//
     @GetMapping("/delete/{id}")
     public String deleteConfirm(@PathVariable Integer id, Model model) {
-        Optional<Municipio> municipio = municipioService.buscaPorId(id);
-        if (municipio.isPresent()) {
-            model.addAttribute("municipio", municipio.get());
-            model.addAttribute("action", "delete");
-            return "municipio/mant";
-        }
-        return "redirect:/municipios";
+         Municipio municipio = municipioService.buscaPorId(id).orElseThrow();
+        model.addAttribute("municipio", municipio);
+        model.addAttribute("action", "delete");
+        return "municipio/mant";
     }
 
     //--procesar post segun accion--//

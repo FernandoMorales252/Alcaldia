@@ -14,11 +14,11 @@ public interface IEmpleadoService {
 
     List<Empleado> obtenerTodos();
 
-    Optional<Empleado> buscarPorId(Integer id);
+    Optional<Empleado> buscarPorId(Integer id_empleado);
 
     Empleado crearOeditar(Empleado empleado);
 
-    void eliminarPorId(Integer id);
+    void eliminarPorId(Integer id_empleado);
 
 
 }

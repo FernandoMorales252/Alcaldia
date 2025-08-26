@@ -2,6 +2,9 @@ package com.SysGroup.Alcaldia.Modelos;
 
 import java.math.*;
 import java.util.*;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -16,11 +19,13 @@ public class Proyecto {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-    @Temporal(TemporalType.DATE)
-    private Date fecha_inicio;
+  @Temporal(TemporalType.DATE)
+@DateTimeFormat(pattern = "yyyy-MM-dd")
+private Date fecha_inicio;
 
-    @Temporal(TemporalType.DATE)
-    private Date fecha_fin;
+@Temporal(TemporalType.DATE)
+@DateTimeFormat(pattern = "yyyy-MM-dd")
+private Date fecha_fin;
 
     
     private int estado;

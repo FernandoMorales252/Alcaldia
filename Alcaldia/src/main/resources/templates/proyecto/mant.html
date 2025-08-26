@@ -8,13 +8,13 @@
 <body>
 <section layout:fragment="content">
     <h2 th:text="${action == 'create' ? 'Crear nuevo proyecto' :
-                  action == 'edit' ? 'Editar proyecto' :
-                  action == 'view' ? 'Ver proyecto' :
-                  action == 'delete' ? 'Eliminar proyecto' : 'Proyecto'}"></h2>
+                     action == 'edit' ? 'Editar proyecto' :
+                     action == 'view' ? 'Ver proyecto' :
+                     action == 'delete' ? 'Eliminar proyecto' : 'Proyecto'}"></h2>
 
     <form th:action="@{${action == 'create' ? '/proyectos/create' :
-                      action == 'edit' ? '/proyectos/edit' :
-                      action == 'delete' ? '/proyectos/delete' : '#'}}"
+                          action == 'edit' ? '/proyectos/edit' :
+                          action == 'delete' ? '/proyectos/delete' : '#'}}"
           th:object="${proyecto}" method="post">
 
         <input type="hidden" th:if="${proyecto.id_proyecto != null}" th:field="*{id_proyecto}" />
@@ -22,10 +22,10 @@
         <div class="row">
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label for="nombre_proyecto" class="form-label">Nombre del Proyecto</label>
-                    <input type="text" th:field="*{nombre_proyecto}" id="nombre_proyecto" class="form-control"
+                    <label for="nombre" class="form-label">Nombre del Proyecto</label>
+                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control"
                            th:attr="readonly=${action=='view' or action=='delete'}" />
-                    <div class="text-danger" th:if="${#fields.hasErrors('nombre_proyecto')}" th:errors="*{nombre_proyecto}"></div>
+                    <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
                 </div>
             </div>
 
@@ -34,10 +34,8 @@
                     <label for="estado" class="form-label">Estado</label>
                     <select th:field="*{estado}" id="estado" class="form-control"
                             th:attr="disabled=${action=='view' or action=='delete'}">
-                        <option value="">Seleccionar estado</option>
-                        <option th:each="estadoOption : ${T(com.esfe.Asistencia.Modelos.EstadoProyecto).values()}"
-                                th:value="${estadoOption}" 
-                                th:text="${estadoOption}"></option>
+                        <option value="1" th:selected="${proyecto.estado == 1}">Activo</option>
+                        <option value="0" th:selected="${proyecto.estado == 0}">Inactivo</option>
                     </select>
                     <div class="text-danger" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></div>
                 </div>
@@ -83,27 +81,19 @@
 
             <div class="col-md-6">
                 <div class="mb-3">
-                    <label for="id_municipio" class="form-label">Municipio</label>
-                    <select th:field="*{id_municipio}" id="id_municipio" class="form-control"
+                    <label for="municipioId" class="form-label">Municipio</label>
+                    <select name="municipioId" id="municipioId" class="form-control"
                             th:attr="disabled=${action=='view' or action=='delete'}">
                         <option value="">Seleccionar municipio</option>
-                        <option th:each="municipio : ${municipios}"
-                                th:value="${municipio.id_municipio}" 
-                                th:text="${municipio.nombre_municipio}"></option>
+                        <option th:each="mun : ${municipios}"
+                                th:value="${mun.id_municipio}"
+                                th:text="${mun.nombre_municipio}"
+                                th:selected="${proyecto.id_municipio != null and proyecto.id_municipio.id_municipio == mun.id_municipio}"></option>
                     </select>
-                    <div class="text-danger" th:if="${#fields.hasErrors('id_municipio')}" th:errors="*{id_municipio}"></div>
                 </div>
             </div>
         </div>
-
-        <div class="mb-3">
-            <label for="imagen_url" class="form-label">URL de Imagen</label>
-            <input type="url" th:field="*{imagen_url}" id="imagen_url" class="form-control"
-                   th:attr="readonly=${action=='view' or action=='delete'}" 
-                   placeholder="https://ejemplo.com/imagen.jpg" />
-            <div class="text-danger" th:if="${#fields.hasErrors('imagen_url')}" th:errors="*{imagen_url}"></div>
-        </div>
-
+        
         <div th:if="${action != 'view'}" class="mb-3">
             <button type="submit"
                     th:text="${action == 'delete' ? 'Confirmar Eliminación' : 'Guardar'}"
@@ -115,7 +105,6 @@
         <div th:if="${action == 'view'}" class="mb-3">
             <a th:href="@{/proyectos}" class="btn btn-secondary">Regresar</a>
         </div>
-
     </form>
 </section>
 </body>

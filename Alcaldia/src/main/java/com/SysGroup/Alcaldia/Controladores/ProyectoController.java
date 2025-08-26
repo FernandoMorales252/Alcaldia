@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.SysGroup.Alcaldia.Modelos.Municipio;
 import com.SysGroup.Alcaldia.Modelos.Proyecto;
 import com.SysGroup.Alcaldia.Servicios.Implementaciones.MunicipioService;
 import com.SysGroup.Alcaldia.Servicios.Implementaciones.ProyectoService;
@@ -91,31 +92,41 @@ public class ProyectoController {
     }
 
     //--procesar post segun accion--//
-    @PostMapping("/create")
-    public String saveNuevo(@ModelAttribute Proyecto proyecto, BindingResult result,
-                           RedirectAttributes redirect, Model model) {
-        if (result.hasErrors()) {
-            model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
-            model.addAttribute("action", "create");
-            return "proyecto/mant";
-        }
-        proyectoService.crearOEditar(proyecto);
-        redirect.addFlashAttribute("mensaje", "El proyecto se ha creado correctamente.");
-        return "redirect:/proyectos";
+   @PostMapping("/create")
+public String saveNuevo(@RequestParam("municipioId") Integer municipioId,
+                        @ModelAttribute Proyecto proyecto, BindingResult result,
+                        RedirectAttributes redirect, Model model) {
+    if (result.hasErrors()) {
+        model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+        model.addAttribute("action", "create");
+        return "proyecto/mant";
     }
 
-    @PostMapping("/edit")
-    public String saveEdit(@ModelAttribute Proyecto proyecto, BindingResult result,
-                          RedirectAttributes redirect, Model model) {
-        if (result.hasErrors()) {
-            model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
-            model.addAttribute("action", "edit");
-            return "proyecto/mant";
-        }
-        proyectoService.crearOEditar(proyecto);
-        redirect.addFlashAttribute("mensaje", "El proyecto se ha editado correctamente.");
-        return "redirect:/proyectos";
+    Municipio municipio = municipioService.buscarMunicipioPorId(municipioId);
+    proyecto.setId_municipio(municipio); // Asigna el objeto Municipio
+
+    proyectoService.crearOEditar(proyecto);
+    redirect.addFlashAttribute("mensaje", "El proyecto se ha creado correctamente.");
+    return "redirect:/proyectos";
+}
+
+   @PostMapping("/edit")
+public String saveEdit(@RequestParam("municipioId") Integer municipioId,
+                       @ModelAttribute Proyecto proyecto, BindingResult result,
+                       RedirectAttributes redirect, Model model) {
+    if (result.hasErrors()) {
+        model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+        model.addAttribute("action", "edit");
+        return "proyecto/mant";
     }
+
+    Municipio municipio = municipioService.buscarMunicipioPorId(municipioId);
+    proyecto.setId_municipio(municipio); // Asigna el objeto Municipio
+
+    proyectoService.crearOEditar(proyecto);
+    redirect.addFlashAttribute("mensaje", "El proyecto se ha editado correctamente.");
+    return "redirect:/proyectos";
+}
 
     @PostMapping("/delete")
     public String deleteProyecto(@ModelAttribute Proyecto proyecto,

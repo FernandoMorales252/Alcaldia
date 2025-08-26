@@ -49,21 +49,23 @@
             <tbody>
                 <tr th:each="proyecto : ${proyecto.content}">
                     <td th:text="${proyecto.id_proyecto}">ID</td>
-                    <td th:text="${proyecto.nombre_proyecto}">Nombre</td>
+                    <!-- CORREGIDO: El nombre del campo en el modelo es 'nombre', no 'nombre_proyecto' -->
+                    <td th:text="${proyecto.nombre}">Nombre</td>
                     <td>
+                        <!-- CORREGIDO: El estado es un 'int' (0 o 1), no una cadena. Se mapea a "Activo" o "Inactivo". -->
                         <span class="badge" 
-                              th:classappend="${proyecto.estado == 'ACTIVO' ? 'bg-success' : 
-                                             proyecto.estado == 'COMPLETADO' ? 'bg-primary' : 
-                                             proyecto.estado == 'SUSPENDIDO' ? 'bg-warning' :
-                                             proyecto.estado == 'CANCELADO' ? 'bg-danger' : 'bg-secondary'}"
-                              th:text="${proyecto.estado}">Estado</span>
+                              th:classappend="${proyecto.estado == 1 ? 'bg-success' : 'bg-secondary'}"
+                              th:text="${proyecto.estado == 1 ? 'Activo' : 'Inactivo'}">Estado</span>
                     </td>
+                    <!-- La lógica de fechas es correcta, se deja como está -->
                     <td th:text="${#dates.format(proyecto.fecha_inicio, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_inicio != null}">Fecha Inicio</td>
                     <td th:if="${proyecto.fecha_inicio == null}">-</td>
                     <td th:text="${#dates.format(proyecto.fecha_fin, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_fin != null}">Fecha Fin</td>
                     <td th:if="${proyecto.fecha_fin == null}">-</td>
+                    <!-- La lógica del presupuesto es correcta, se deja como está -->
                     <td th:text="${#numbers.formatCurrency(proyecto.presupuesto)}" th:if="${proyecto.presupuesto != null}">Presupuesto</td>
                     <td th:if="${proyecto.presupuesto == null}">-</td>
+                    <!-- CORREGIDO: Se accede a la propiedad 'nombre_municipio' del objeto 'id_municipio' -->
                     <td th:text="${proyecto.id_municipio != null ? proyecto.id_municipio.nombre_municipio : '-'}">Municipio</td>
                     <td>
                         <a th:href="@{/proyectos/view/{id}(id=${proyecto.id_proyecto})}" class="btn btn-info btn-sm">Ver</a>

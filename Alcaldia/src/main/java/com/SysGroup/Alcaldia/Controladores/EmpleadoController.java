@@ -1,5 +1,6 @@
 package com.SysGroup.Alcaldia.Controladores;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -18,13 +19,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.data.domain.Page;
+import org.thymeleaf.context.Context;
 
 import com.SysGroup.Alcaldia.Modelos.Empleado;
 import com.SysGroup.Alcaldia.Servicios.Interfaces.ICargoService;
 import com.SysGroup.Alcaldia.Servicios.Interfaces.IEmpleadoService;
 import com.SysGroup.Alcaldia.Servicios.Interfaces.IMunicipioService;
+import com.SysGroup.Alcaldia.Utilidades.PdfGeneratorService;
 
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 
 @Controller
@@ -37,6 +42,8 @@ public class EmpleadoController {
     private ICargoService cargoService;
     @Autowired
     private IMunicipioService municipioService;
+    @Autowired
+    private PdfGeneratorService pdfGeneratorService;
 
     // ----------- Listado --------------
     @GetMapping
@@ -57,6 +64,10 @@ public class EmpleadoController {
                     .boxed().collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
+         // Agregamos la lista de cargos para el formulario de filtros
+        model.addAttribute("cargos", cargoService.obtenerTodos());
+        model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+
         return "empleado/index";
     }
     // ----------- Crear --------------
@@ -133,5 +144,29 @@ public class EmpleadoController {
         empleadoService.eliminarPorId(empleado.getId_empleado());
         redirect.addFlashAttribute("msg", "Empleado eliminado correctamente");
         return "redirect:/empleados";
+    }
+
+     // ----------- Metodo para generar el PDF --------------
+    @GetMapping("/empleadoPDF")
+    public void generarPdf(
+            HttpServletResponse response,
+            @RequestParam(value = "fechaInicio", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaInicio,
+            @RequestParam(value = "fechaFin", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fechaFin,
+            @RequestParam(value = "id_Cargo", required = false) Integer id_Cargo,
+            @RequestParam(value = "id_Municipio", required = false) Integer id_Municipio,
+            @RequestParam(value = "estado", required = false) Integer estado) throws Exception {
+
+        List<Empleado> empleadosFiltrados = empleadoService.buscarEmpleadosFiltrados(fechaInicio, fechaFin, id_Cargo, id_Municipio, estado);
+        Context context = new Context();
+        context.setVariable("empleados", empleadosFiltrados);
+
+        byte[] pdfBytes = pdfGeneratorService.generatePdfReport("empleado/RPEmpleado", context);
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline; filename=empleados.pdf");
+        response.setContentLength(pdfBytes.length);
+
+        response.getOutputStream().write(pdfBytes);
+        response.getOutputStream().flush();
     }
 }

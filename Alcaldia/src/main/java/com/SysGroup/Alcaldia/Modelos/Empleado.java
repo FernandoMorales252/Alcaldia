@@ -1,5 +1,7 @@
 package com.SysGroup.Alcaldia.Modelos;
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.Date;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -16,7 +18,7 @@ public class Empleado {
     private String apellido;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull(message = "La fecha de contratación no puede estar vacía")
-    private Date fecha_contratacion;
+    private LocalDate  fecha_contratacion;
 
     @NotNull(message = "El estado no puede estar vacío")
     private int estado;
@@ -55,10 +57,10 @@ public class Empleado {
     public void setApellido(String apellido) {
         this.apellido = apellido;
     }
-    public Date getFecha_contratacion() {
+    public LocalDate getFecha_contratacion() {
         return fecha_contratacion;
     }
-    public void setFecha_contratacion(Date fecha_contratacion) {
+    public void setFecha_contratacion(LocalDate fecha_contratacion) {
         this.fecha_contratacion = fecha_contratacion;
     }
     public int getEstado() {

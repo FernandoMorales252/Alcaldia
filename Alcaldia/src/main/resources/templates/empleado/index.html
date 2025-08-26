@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_MainLayout}">
+<head>
+    <title layout:fragment="title">Listado de Empleados</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div th:if="${msg != null }">
+        <script>
+            swal({
+            title:"Confirmación",
+            text: '[[ ${msg} ]]',
+            icon: "success"
+            });
+        </script>
+    </div>
+    <div th:if="${error != null }">
+        <script>
+            swal({
+            title:"Error",
+            text: '[[ ${error} ]]',
+            icon: "error"
+            });
+        </script>
+    </div>
+
+    <h2>Listado de Empleados</h2>
+
+    <div class="mb-3">
+        <a th:href="@{/empleados/create}" class="btn btn-success">Crear Nuevo Empleado</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre Completo</th>
+                    <th>Cargo</th>
+                    <th>Municipio</th>
+                    <th>Fecha de Contratación</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="empleado : ${empleados.content}">
+                    <td th:text="${empleado.id_empleado}"></td>
+                    <td th:text="${empleado.nombre} + ' ' + ${empleado.apellido}"></td>
+                    <td th:text="${empleado.cargo?.nombre_cargo}"></td>
+                    <td th:text="${empleado.municipio?.nombre_municipio}"></td>
+                    <td th:text="${empleado.fecha_contratacion}"></td>
+                    <td th:text="${empleado.estado == 1 ? 'Activo' : 'Inactivo'}"></td>
+                    <td>
+                        <a th:href="@{/empleados/view/{id}(id=${empleado.id_empleado})}" class="btn btn-info btn-sm">Ver</a>
+                        <a th:href="@{/empleados/edit/{id}(id=${empleado.id_empleado})}" class="btn btn-warning btn-sm">Editar</a>
+                        <a th:href="@{/empleados/delete/{id}(id=${empleado.id_empleado})}" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+                <tr th:if="${empleados.totalElements == 0}">
+                    <td colspan="7" class="text-center">No hay empleados registrados.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav th:if="${pageNumbers}">
+        <ul class="pagination justify-content-center">
+            <li th:each="pageNum : ${pageNumbers}" class="page-item"
+                th:classappend="${pageNum == empleados.number + 1} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/empleados(page=${pageNum},size=${empleados.size})}"
+                   th:text="${pageNum}"></a>
+            </li>
+        </ul>
+    </nav>
+    
+</section>
+</body>
+</html>

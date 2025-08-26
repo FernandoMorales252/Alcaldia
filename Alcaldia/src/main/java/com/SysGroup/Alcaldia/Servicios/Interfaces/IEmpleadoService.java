@@ -14,7 +14,7 @@ public interface IEmpleadoService {
 
     List<Empleado> obtenerTodos();
 
-    Optional<Empleado> buscarPorId(Integer id_empleado);
+    Empleado buscarPorId(Integer id_empleado);
 
     Empleado crearOeditar(Empleado empleado);
 

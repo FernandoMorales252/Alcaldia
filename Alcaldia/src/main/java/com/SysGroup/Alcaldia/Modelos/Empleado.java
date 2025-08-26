@@ -2,6 +2,8 @@ package com.SysGroup.Alcaldia.Modelos;
 import jakarta.persistence.*;
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 @Entity
 @Table(name = "empleado")
 public class Empleado {
@@ -11,16 +13,17 @@ public class Empleado {
 
     private String nombre;
     private String apellido;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private Date fecha_contratacion;
     private int estado;
 
     @ManyToOne
     @JoinColumn(name = "id_cargo")
-    private Cargo id_cargo;
+    private Cargo cargo;
 
     @ManyToOne
     @JoinColumn(name = "id_municipio")
-    private Municipio id_municipio;
+    private Municipio municipio;
 
     public enum EstadoEmpleado {
         activo,
@@ -58,16 +61,16 @@ public class Empleado {
     public void setEstado(int estado) {
         this.estado = estado;
     }
-    public Cargo getId_cargo() {
-        return id_cargo;
+    public Cargo getCargo() {
+        return cargo;
     }
-    public void setId_cargo(Cargo id_cargo) {
-        this.id_cargo = id_cargo;
+    public void setCargo(Cargo cargo) {
+        this.cargo = cargo;
     }
-    public Municipio getId_municipio() {
-        return id_municipio;
+    public Municipio getMunicipio() {
+        return municipio;
     }
-    public void setId_municipio(Municipio id_municipio) {
-        this.id_municipio = id_municipio;
+    public void setMunicipio(Municipio municipio) {
+        this.municipio = municipio;
     }
 }

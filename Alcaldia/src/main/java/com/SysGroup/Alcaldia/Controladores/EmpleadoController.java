@@ -39,8 +39,8 @@ public class EmpleadoController {
     // ----------- Listado --------------
     @GetMapping
     public String index(Model model,
-            @RequestParam("page") Optional<Integer> page,
-            @RequestParam("size") Optional<Integer> size) {
+                        @RequestParam("page") Optional<Integer> page,
+                        @RequestParam("size") Optional<Integer> size) {
 
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
@@ -55,10 +55,8 @@ public class EmpleadoController {
                     .boxed().collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
-
         return "empleado/index";
     }
-
     // ----------- Crear --------------
     @GetMapping("/create")
     public String create(Model model) {
@@ -68,44 +66,40 @@ public class EmpleadoController {
         model.addAttribute("action", "create");
         return "empleado/mant";
     }
-
     // ----------- Editar --------------
     @GetMapping("/edit/{id_empleado}")
     public String edit(@PathVariable Integer id_empleado, Model model) {
-        Empleado empleado = empleadoService.buscarPorId(id_empleado).orElseThrow();
+        Empleado empleado = empleadoService.buscarPorId(id_empleado);
         model.addAttribute("empleado", empleado);
         model.addAttribute("cargos", cargoService.obtenerTodos());
         model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
         model.addAttribute("action", "edit");
         return "empleado/mant";
     }
-
     // ----------- Ver (solo lectura) --------------
-    @GetMapping("/view/{id}")
-    public String view(@PathVariable Integer id, Model model) {
-        Empleado empleado = empleadoService.buscarPorId(id).orElseThrow();
+    @GetMapping("/view/{id_empleado}")
+    public String view(@PathVariable Integer id_empleado, Model model) {
+        Empleado empleado = empleadoService.buscarPorId(id_empleado);
         model.addAttribute("empleado", empleado);
         model.addAttribute("cargos", cargoService.obtenerTodos());
         model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
         model.addAttribute("action", "view");
         return "empleado/mant";
     }
-
     // ----------- Eliminar (confirmación) --------------
-    @GetMapping("/delete/{id}")
-    public String deleteConfirm(@PathVariable Integer id, Model model) {
-        Empleado empleado = empleadoService.buscarPorId(id).orElseThrow();
+    @GetMapping("/delete/{id_empleado}")
+    public String deleteConfirm(@PathVariable Integer id_empleado, Model model) {
+        Empleado empleado = empleadoService.buscarPorId(id_empleado);
         model.addAttribute("empleado", empleado);
         model.addAttribute("cargos", cargoService.obtenerTodos());
         model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
         model.addAttribute("action", "delete");
         return "empleado/mant";
     }
-
-    // ----------- Procesar post según action --------------
+    // ----------- Procesar POST para crear un nuevo empleado --------------
     @PostMapping("/create")
     public String saveNuevo(@ModelAttribute Empleado empleado, BindingResult result,
-            RedirectAttributes redirect, Model model) {
+                            RedirectAttributes redirect, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("cargos", cargoService.obtenerTodos());
             model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
@@ -116,10 +110,10 @@ public class EmpleadoController {
         redirect.addFlashAttribute("msg", "Empleado creado correctamente");
         return "redirect:/empleados";
     }
-
+    // ----------- Procesar POST para editar un empleado existente --------------
     @PostMapping("/edit")
     public String saveEditado(@ModelAttribute Empleado empleado, BindingResult result,
-            RedirectAttributes redirect, Model model) {
+                              RedirectAttributes redirect, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("cargos", cargoService.obtenerTodos());
             model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
@@ -131,11 +125,11 @@ public class EmpleadoController {
         return "redirect:/empleados";
     }
 
+    // ----------- Procesar POST para eliminar un empleado --------------
     @PostMapping("/delete")
     public String deleteEmpleado(@ModelAttribute Empleado empleado, RedirectAttributes redirect) {
         empleadoService.eliminarPorId(empleado.getId_empleado());
         redirect.addFlashAttribute("msg", "Empleado eliminado correctamente");
         return "redirect:/empleados";
     }
-
 }

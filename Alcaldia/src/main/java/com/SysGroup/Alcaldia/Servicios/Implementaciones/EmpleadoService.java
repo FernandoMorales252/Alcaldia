@@ -28,8 +28,8 @@ public class EmpleadoService implements IEmpleadoService {
     }
 
     @Override
-    public Optional<Empleado>  buscarPorId(Integer id_empleado){
-        return empleadoRepository.findById(id_empleado);
+    public Empleado buscarPorId(Integer id_empleado){
+        return empleadoRepository.findById(id_empleado).get();
     }
 
     @Override

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_MainLayout}">
+<head>
+    <title layout:fragment="title" th:text="'Empleado - ' + ${action}">Empleado</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <h2 th:text="${action == 'create' ? 'Crear Nuevo Empleado' :
+                    action == 'edit' ? 'Editar Empleado' :
+                    action == 'view' ? 'Ver Empleado' :
+                    action == 'delete' ? 'Eliminar Empleado' : 'Empleado'}"></h2>
+
+    <form th:action="@{${action == 'create' ? '/empleados/create' :
+                      action == 'edit' ? '/empleados/edit' :
+                      action == 'delete' ? '/empleados/delete' : '#'}}"
+          th:object="${empleado}" method="post">
+
+        <input type="hidden" th:if="${empleado.id_empleado != null}" th:field="*{id_empleado}" />
+
+        <div class="mb-3">
+            <label for="nombre" class="form-label">Nombre</label>
+            <input type="text" th:field="*{nombre}" id="nombre" class="form-control"
+                   th:attr="readonly=${action=='view' or action=='delete'}" />
+            <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="apellido" class="form-label">Apellido</label>
+            <input type="text" th:field="*{apellido}" id="apellido" class="form-control"
+                   th:attr="readonly=${action=='view' or action=='delete'}" />
+            <div class="text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="fecha_contratacion" class="form-label">Fecha de Contratación</label>
+            <input type="date" th:field="*{fecha_contratacion}" id="fecha_contratacion" class="form-control"
+                   th:attr="readonly=${action=='view' or action=='delete'}" />
+            <div class="text-danger" th:if="${#fields.hasErrors('fecha_contratacion')}" th:errors="*{fecha_contratacion}"></div>
+        </div>
+        
+        <div class="mb-3">
+            <label for="estado" class="form-label">Estado</label>
+            <select th:field="*{estado}" id="estado" class="form-select"
+                    th:disabled="${action == 'view' || action == 'delete'}">
+                <option value="0">Inactivo</option>
+                <option value="1">Activo</option>
+            </select>
+            <div class="text-danger" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="cargo" class="form-label">Cargo</label>
+            <select th:field="*{cargo}" id="cargo" class="form-select"
+                    th:disabled="${action == 'view' || action == 'delete'}">
+                <option value="">-- Seleccione un Cargo --</option>
+                <option th:each="c : ${cargos}" th:value="${c.id_cargo}" th:text="${c.nombre_cargo}"></option>
+            </select>
+            <div class="text-danger" th:if="${#fields.hasErrors('cargo')}" th:errors="*{cargo}"></div>
+        </div>
+
+        <div class="mb-3">
+            <label for="municipio" class="form-label">Municipio</label>
+            <select th:field="*{municipio}" id="municipio" class="form-select"
+                    th:disabled="${action == 'view' || action == 'delete'}">
+                <option value="">-- Seleccione un Municipio --</option>
+                <option th:each="m : ${municipios}" th:value="${m.id_municipio}" th:text="${m.nombre_municipio}"></option>
+            </select>
+            <div class="text-danger" th:if="${#fields.hasErrors('municipio')}" th:errors="*{municipio}"></div>
+        </div>
+
+        <div th:if="${action != 'view'}" class="mb-3">
+            <button type="submit"
+                    th:text="${action == 'delete' ? 'Confirmar Eliminación' : 'Guardar'}"
+                    class="btn"
+                    th:classappend="${action == 'delete' ? 'btn-danger' : 'btn-primary'}"></button>
+            <a th:href="@{/empleados}" class="btn btn-secondary">Cancelar</a>
+        </div>
+
+        <div th:if="${action == 'view'}" class="mb-3">
+            <a th:href="@{/empleados}" class="btn btn-secondary">Regresar</a>
+        </div>
+
+    </form>
+</section>
+</body>
+</html>

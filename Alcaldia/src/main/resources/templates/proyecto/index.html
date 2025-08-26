@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_MainLayout}">
+<head>
+    <title layout:fragment="title">Listado de proyectos</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <div th:if="${msg != null }">
+        <script>
+            swal({
+            title:"Confirmación",
+            text: '[[ ${msg} ]]',
+            icon: "success"
+            });
+        </script>
+    </div>
+    <div th:if="${error != null }">
+        <script>
+            swal({
+            title:"Error",
+            text: '[[ ${error} ]]',
+            icon: "error"
+            });
+        </script>
+    </div>
+
+    <h2>Listado de proyectos</h2>
+
+    <div class="mb-3">
+        <a th:href="@{/proyectos/create}" class="btn btn-success">Nuevo Proyecto</a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre del Proyecto</th>
+                <th>Estado</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Presupuesto</th>
+                <th>Municipio</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr th:each="proyecto : ${proyecto.content}">
+                    <td th:text="${proyecto.id_proyecto}">ID</td>
+                    <td th:text="${proyecto.nombre_proyecto}">Nombre</td>
+                    <td>
+                        <span class="badge" 
+                              th:classappend="${proyecto.estado == 'ACTIVO' ? 'bg-success' : 
+                                             proyecto.estado == 'COMPLETADO' ? 'bg-primary' : 
+                                             proyecto.estado == 'SUSPENDIDO' ? 'bg-warning' :
+                                             proyecto.estado == 'CANCELADO' ? 'bg-danger' : 'bg-secondary'}"
+                              th:text="${proyecto.estado}">Estado</span>
+                    </td>
+                    <td th:text="${#dates.format(proyecto.fecha_inicio, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_inicio != null}">Fecha Inicio</td>
+                    <td th:if="${proyecto.fecha_inicio == null}">-</td>
+                    <td th:text="${#dates.format(proyecto.fecha_fin, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_fin != null}">Fecha Fin</td>
+                    <td th:if="${proyecto.fecha_fin == null}">-</td>
+                    <td th:text="${#numbers.formatCurrency(proyecto.presupuesto)}" th:if="${proyecto.presupuesto != null}">Presupuesto</td>
+                    <td th:if="${proyecto.presupuesto == null}">-</td>
+                    <td th:text="${proyecto.id_municipio != null ? proyecto.id_municipio.nombre_municipio : '-'}">Municipio</td>
+                    <td>
+                        <a th:href="@{/proyectos/view/{id}(id=${proyecto.id_proyecto})}" class="btn btn-info btn-sm">Ver</a>
+                        <a th:href="@{/proyectos/edit/{id}(id=${proyecto.id_proyecto})}" class="btn btn-warning btn-sm">Editar</a>
+                        <a th:href="@{/proyectos/delete/{id}(id=${proyecto.id_proyecto})}" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+                <tr th:if="${proyecto.totalElements == 0}">
+                    <td colspan="8" class="text-center">No hay proyectos registrados.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <nav th:if="${pageNumbers}">
+        <ul class="pagination justify-content-center">
+            <li th:each="pageNum : ${pageNumbers}" class="page-item"
+                th:classappend="${pageNum == proyecto.number + 1} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/proyectos(page=${pageNum},size=${proyecto.size})}"
+                   th:text="${pageNum}"></a>
+            </li>
+        </ul>
+    </nav>
+
+</section>
+</body>
+</html>

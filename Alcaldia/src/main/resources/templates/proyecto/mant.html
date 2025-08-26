@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/_MainLayout}">
+<head>
+    <title layout:fragment="title" th:text="'Proyecto - ' + ${action}">Proyecto</title>
+</head>
+<body>
+<section layout:fragment="content">
+    <h2 th:text="${action == 'create' ? 'Crear nuevo proyecto' :
+                  action == 'edit' ? 'Editar proyecto' :
+                  action == 'view' ? 'Ver proyecto' :
+                  action == 'delete' ? 'Eliminar proyecto' : 'Proyecto'}"></h2>
+
+    <form th:action="@{${action == 'create' ? '/proyectos/create' :
+                      action == 'edit' ? '/proyectos/edit' :
+                      action == 'delete' ? '/proyectos/delete' : '#'}}"
+          th:object="${proyecto}" method="post">
+
+        <input type="hidden" th:if="${proyecto.id_proyecto != null}" th:field="*{id_proyecto}" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="nombre_proyecto" class="form-label">Nombre del Proyecto</label>
+                    <input type="text" th:field="*{nombre_proyecto}" id="nombre_proyecto" class="form-control"
+                           th:attr="readonly=${action=='view' or action=='delete'}" />
+                    <div class="text-danger" th:if="${#fields.hasErrors('nombre_proyecto')}" th:errors="*{nombre_proyecto}"></div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select th:field="*{estado}" id="estado" class="form-control"
+                            th:attr="disabled=${action=='view' or action=='delete'}">
+                        <option value="">Seleccionar estado</option>
+                        <option th:each="estadoOption : ${T(com.esfe.Asistencia.Modelos.EstadoProyecto).values()}"
+                                th:value="${estadoOption}" 
+                                th:text="${estadoOption}"></option>
+                    </select>
+                    <div class="text-danger" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="descripcion" class="form-label">Descripción</label>
+            <textarea th:field="*{descripcion}" id="descripcion" class="form-control" rows="3"
+                      th:attr="readonly=${action=='view' or action=='delete'}"></textarea>
+            <div class="text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+                    <input type="date" th:field="*{fecha_inicio}" id="fecha_inicio" class="form-control"
+                           th:attr="readonly=${action=='view' or action=='delete'}" />
+                    <div class="text-danger" th:if="${#fields.hasErrors('fecha_inicio')}" th:errors="*{fecha_inicio}"></div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="fecha_fin" class="form-label">Fecha de Fin</label>
+                    <input type="date" th:field="*{fecha_fin}" id="fecha_fin" class="form-control"
+                           th:attr="readonly=${action=='view' or action=='delete'}" />
+                    <div class="text-danger" th:if="${#fields.hasErrors('fecha_fin')}" th:errors="*{fecha_fin}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="presupuesto" class="form-label">Presupuesto</label>
+                    <input type="number" step="0.01" th:field="*{presupuesto}" id="presupuesto" class="form-control"
+                           th:attr="readonly=${action=='view' or action=='delete'}" />
+                    <div class="text-danger" th:if="${#fields.hasErrors('presupuesto')}" th:errors="*{presupuesto}"></div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="mb-3">
+                    <label for="id_municipio" class="form-label">Municipio</label>
+                    <select th:field="*{id_municipio}" id="id_municipio" class="form-control"
+                            th:attr="disabled=${action=='view' or action=='delete'}">
+                        <option value="">Seleccionar municipio</option>
+                        <option th:each="municipio : ${municipios}"
+                                th:value="${municipio.id_municipio}" 
+                                th:text="${municipio.nombre_municipio}"></option>
+                    </select>
+                    <div class="text-danger" th:if="${#fields.hasErrors('id_municipio')}" th:errors="*{id_municipio}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <label for="imagen_url" class="form-label">URL de Imagen</label>
+            <input type="url" th:field="*{imagen_url}" id="imagen_url" class="form-control"
+                   th:attr="readonly=${action=='view' or action=='delete'}" 
+                   placeholder="https://ejemplo.com/imagen.jpg" />
+            <div class="text-danger" th:if="${#fields.hasErrors('imagen_url')}" th:errors="*{imagen_url}"></div>
+        </div>
+
+        <div th:if="${action != 'view'}" class="mb-3">
+            <button type="submit"
+                    th:text="${action == 'delete' ? 'Confirmar Eliminación' : 'Guardar'}"
+                    class="btn"
+                    th:classappend="${action == 'delete' ? 'btn-danger' : 'btn-primary'}"></button>
+            <a th:href="@{/proyectos}" class="btn btn-secondary">Cancelar</a>
+        </div>
+
+        <div th:if="${action == 'view'}" class="mb-3">
+            <a th:href="@{/proyectos}" class="btn btn-secondary">Regresar</a>
+        </div>
+
+    </form>
+</section>
+</body>
+</html>

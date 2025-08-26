@@ -38,4 +38,10 @@ public class Tipo_DocumentoArchivoService implements ITipo_DocumentoArchivoServi
         tipoDocumentoArchivoRepository.deleteById(id);
     }
 
+     @Override
+public Tipo_DocumentoArchivo buscarTipoDocumentoPorId(Integer id) {
+    return tipoDocumentoArchivoRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Tipo documento no encontrado con ID: " + id));
+}
+
 }

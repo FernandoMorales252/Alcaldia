@@ -1,6 +1,5 @@
 package com.SysGroup.Alcaldia.Controladores;
 
-import java.beans.PropertyEditorSupport;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.SysGroup.Alcaldia.Modelos.DocumentoArchivo;
+import com.SysGroup.Alcaldia.Modelos.Municipio;
+import com.SysGroup.Alcaldia.Modelos.Tipo_DocumentoArchivo;
 import com.SysGroup.Alcaldia.Servicios.Implementaciones.DocumentoArchivoService;
 import com.SysGroup.Alcaldia.Servicios.Implementaciones.MunicipioService;
 import com.SysGroup.Alcaldia.Servicios.Implementaciones.Tipo_DocumentoArchivoService;
@@ -101,40 +102,65 @@ public String deleteConfirm(@PathVariable Integer id, Model model) {
 }
 
 @PostMapping("/create")
-public String saveNuevo(@ModelAttribute DocumentoArchivo documentoArchivo, BindingResult result,
-                        RedirectAttributes redirect, Model model) {
+public String saveNuevo(@RequestParam("municipioId") Integer municipioId,
+                       @RequestParam("tipoDocumentoId") Integer tipoDocumentoId,
+                       @ModelAttribute DocumentoArchivo documentoArchivo, 
+                       BindingResult result,
+                       RedirectAttributes redirect, Model model) {
+    
     if (result.hasErrors()) {
         model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
         model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
         model.addAttribute("action", "create");
         return "documento/mant";
     }
+    
+    // USAR LOS MÉTODOS NUEVOS - CORREGIDO
+    Municipio municipio = municipioService.buscarMunicipioPorId(municipioId);
+    Tipo_DocumentoArchivo tipoDocumento = tipoDocumentoArchivoService.buscarTipoDocumentoPorId(tipoDocumentoId);
+    
+    documentoArchivo.setMunicipio(municipio);
+    documentoArchivo.setTipoDocumento(tipoDocumento);
+    
     documentoArchivoService.crearOEditar(documentoArchivo);
-    redirect.addFlashAttribute("mensaje", "La asignación se ha creado correctamente.");
+    redirect.addFlashAttribute("mensaje", "Documento creado correctamente.");
     return "redirect:/documentos";
 }
 
 @PostMapping("/edit")
-public String saveEdit(@ModelAttribute DocumentoArchivo documentoArchivo, BindingResult result,
-                       RedirectAttributes redirect, Model model) {
+public String saveEdit(@RequestParam("municipioId") Integer municipioId,
+                      @RequestParam("tipoDocumentoId") Integer tipoDocumentoId,
+                      @ModelAttribute DocumentoArchivo documentoArchivo, 
+                      BindingResult result,
+                      RedirectAttributes redirect, Model model) {
+    
     if (result.hasErrors()) {
         model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
         model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
         model.addAttribute("action", "edit");
         return "documento/mant";
     }
+    
+    // USAR LOS MÉTODOS NUEVOS - CORREGIDO
+    Municipio municipio = municipioService.buscarMunicipioPorId(municipioId);
+    Tipo_DocumentoArchivo tipoDocumento = tipoDocumentoArchivoService.buscarTipoDocumentoPorId(tipoDocumentoId);
+    
+    documentoArchivo.setMunicipio(municipio);
+    documentoArchivo.setTipoDocumento(tipoDocumento);
+    
     documentoArchivoService.crearOEditar(documentoArchivo);
-    redirect.addFlashAttribute("mensaje", "La asignación se ha editado correctamente.");
+    redirect.addFlashAttribute("mensaje", "Documento actualizado correctamente.");
     return "redirect:/documentos";
 }
 
 @PostMapping("/delete")
-public String deleteDocumentoArchivo(@ModelAttribute DocumentoArchivo documentoArchivo,
-                                    RedirectAttributes redirect) {
+public String delete(@ModelAttribute DocumentoArchivo documentoArchivo,
+                    RedirectAttributes redirect) {
     documentoArchivoService.eliminarPorId(documentoArchivo.getIdDocumento());
-    redirect.addFlashAttribute("msg", "Documento eliminado correctamente");
+    redirect.addFlashAttribute("mensaje", "Documento eliminado correctamente.");
     return "redirect:/documentos";
 }
 
-
 }
+
+

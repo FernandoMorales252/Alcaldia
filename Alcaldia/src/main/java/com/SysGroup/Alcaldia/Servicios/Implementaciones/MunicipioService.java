@@ -43,6 +43,12 @@ public class MunicipioService implements IMunicipioService {
     public void eliminarMunicipio(Integer id) {
         municipioRepository.deleteById(id);
     }
+
+     @Override
+public Municipio buscarMunicipioPorId(Integer id) {
+    return municipioRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Municipio no encontrado con ID: " + id));
+}
     
     
     }

@@ -65,31 +65,31 @@
 
          <!-- Municipio - CORREGIDO -->
         <div class="mb-3">
-            <label for="municipio" class="form-label">Municipio</label>
-            <select th:field="*{municipio.idMunicipio}" id="municipio" class="form-select"
-                    th:disabled="${action=='view' or action=='delete'}">
-                <option value="">Seleccione municipio</option>
-                <option th:each="mun : ${municipios}" 
-                        th:value="${mun.idMunicipio}" 
-                        th:text="${mun.nombreMunicipio}">
-                </option>
-            </select>
-            <div class="text-danger" th:if="${#fields.hasErrors('municipio')}" th:errors="*{municipio}"></div>
-        </div>
+    <label for="municipioId" class="form-label">Municipio</label>
+    <select name="municipioId" id="municipioId" class="form-select"
+            th:disabled="${action=='view' or action=='delete'}">
+        <option value="">Seleccione municipio</option>
+       <option th:each="mun : ${municipios}" 
+        th:value="${mun.id_municipio}" 
+        th:text="${mun.nombre_municipio}"
+        th:selected="${documentoArchivo.municipio != null and documentoArchivo.municipio.id_municipio == mun.id_municipio}">
+</option>
+    </select>
+    </div>
 
         <!-- Tipo de Documento - CORREGIDO -->
-        <div class="mb-3">
-            <label for="tipoDocumento" class="form-label">Tipo de documento</label>
-            <select th:field="*{tipoDocumento.tipoDocumento}" id="tipoDocumento" class="form-select"
-                    th:disabled="${action=='view' or action=='delete'}">
-                <option value="">Seleccione tipo de documento</option>
-                <option th:each="tipo : ${tipos_documentos}" 
-                        th:value="${tipo.tipoDocumento}" 
-                        th:text="${tipo.nombre_tipo}">
-                </option>
-            </select>
-            <div class="text-danger" th:if="${#fields.hasErrors('tipoDocumento')}" th:errors="*{tipoDocumento}"></div>
-        </div>
+       <div class="mb-3">
+    <label for="tipoDocumentoId" class="form-label">Tipo de documento</label>
+    <select name="tipoDocumentoId" id="tipoDocumentoId" class="form-select"
+            th:disabled="${action=='view' or action=='delete'}">
+        <option value="">Seleccione tipo de documento</option>
+        <option th:each="tipo : ${tipos_documentos}" 
+                th:value="${tipo.id_tipo_documento}" 
+                th:text="${tipo.nombre_tipo}"
+                th:selected="${documentoArchivo.tipoDocumento != null and documentoArchivo.tipoDocumento.id_tipo_documento == tipo.id_tipo_documento}">
+        </option>
+    </select>
+</div>
 
         <!-- Botones -->
         <div th:if="${action != 'view'}" class="mb-3">

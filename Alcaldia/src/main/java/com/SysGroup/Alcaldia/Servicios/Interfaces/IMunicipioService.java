@@ -16,4 +16,5 @@ public interface IMunicipioService {
     void eliminarMunicipio(Integer id);
     Municipio crearOEditar(Municipio municipio);
     Optional<Municipio> buscaPorId(Integer id);
+    Municipio buscarMunicipioPorId(Integer id);
 }

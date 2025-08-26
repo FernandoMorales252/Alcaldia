@@ -1,6 +1,9 @@
 package com.SysGroup.Alcaldia.Modelos;
 
 import java.util.*;
+
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.*;
 
 
@@ -16,6 +19,7 @@ public class DocumentoArchivo {
     private String numeroDocumento;
 
     @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaEmision;
 
     @ManyToOne

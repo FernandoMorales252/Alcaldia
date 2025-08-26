@@ -13,5 +13,6 @@ List<Tipo_DocumentoArchivo> obtenerTodos();
 Optional<Tipo_DocumentoArchivo> buscarPorId(Integer id);
 Tipo_DocumentoArchivo crearOEditar(Tipo_DocumentoArchivo tipoDocumentoArchivo);
 void eliminarPorId(Integer id);
+Tipo_DocumentoArchivo buscarTipoDocumentoPorId(Integer id);
 
 }

@@ -1,7 +1,7 @@
 package com.SysGroup.Alcaldia.Modelos;
 import jakarta.persistence.*;
 import java.util.Date;
-
+import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
@@ -10,19 +10,25 @@ public class Empleado {
      @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_empleado;
-
+@NotBlank(message = "El nombre no puede estar vacío")
     private String nombre;
+    @NotBlank(message = "El apellido no puede estar vacío")
     private String apellido;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    @NotNull(message = "La fecha de contratación no puede estar vacía")
     private Date fecha_contratacion;
+
+    @NotNull(message = "El estado no puede estar vacío")
     private int estado;
 
     @ManyToOne
     @JoinColumn(name = "id_cargo")
+    @NotNull(message = "El cargo no puede estar vacío")
     private Cargo cargo;
 
     @ManyToOne
     @JoinColumn(name = "id_municipio")
+    @NotNull(message = "El municipio no puede estar vacío")
     private Municipio municipio;
 
     public enum EstadoEmpleado {

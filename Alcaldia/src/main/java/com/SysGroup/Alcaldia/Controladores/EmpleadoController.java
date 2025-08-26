@@ -25,6 +25,8 @@ import com.SysGroup.Alcaldia.Servicios.Interfaces.ICargoService;
 import com.SysGroup.Alcaldia.Servicios.Interfaces.IEmpleadoService;
 import com.SysGroup.Alcaldia.Servicios.Interfaces.IMunicipioService;
 
+import jakarta.validation.Valid;
+
 @Controller
 @RequestMapping("/empleados")
 public class EmpleadoController {
@@ -98,7 +100,7 @@ public class EmpleadoController {
     }
     // ----------- Procesar POST para crear un nuevo empleado --------------
     @PostMapping("/create")
-    public String saveNuevo(@ModelAttribute Empleado empleado, BindingResult result,
+    public String saveNuevo(@Valid @ModelAttribute Empleado empleado, BindingResult result,
                             RedirectAttributes redirect, Model model) {
         if (result.hasErrors()) {
             model.addAttribute("cargos", cargoService.obtenerTodos());

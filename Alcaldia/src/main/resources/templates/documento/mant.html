@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
@@ -9,14 +8,19 @@
 <body>
 <section layout:fragment="content">
     <h2 th:text="${action == 'create' ? 'Crear Documento' : 
-                  action == 'edit' ? 'Editar Documento' : 
-                  action == 'view' ? 'Ver Documento' : 
-                  action == 'delete' ? 'Eliminar Documento' : 'Documento'}"></h2>
+                     action == 'edit' ? 'Editar Documento' : 
+                     action == 'view' ? 'Ver Documento' : 
+                     action == 'delete' ? 'Eliminar Documento' : 'Documento'}"></h2>
+    
+    <!-- Mensaje de error para unicidad -->
+    <div th:if="${error}" class="alert alert-danger" role="alert">
+        <span th:text="${error}"></span>
+    </div>
 
     <form th:action="@{${action == 'create' ? '/documentos/create' : 
-                      action == 'edit' ? '/documentos/edit' : 
-                      action == 'delete' ? '/documentos/delete' : '#'}}" 
-          th:object="${documentoArchivo}" method="post">
+                           action == 'edit' ? '/documentos/edit' : 
+                           action == 'delete' ? '/documentos/delete' : '#'}}" 
+          th:object="${documentoArchivo}" method="post" id="proyectoForm">
 
         <input type="hidden" th:if="${documentoArchivo.idDocumento != null}" th:field="*{idDocumento}" />
 
@@ -24,7 +28,7 @@
         <div class="mb-3">
             <label for="numeroDocumento" class="form-label">Número de documento</label>
             <input type="text" th:field="*{numeroDocumento}" id="numeroDocumento" class="form-control"
-                   th:attr="readonly=${action=='view' or action=='delete'}" />
+                   th:attr="readonly=${action=='view' or action=='delete'}" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('numeroDocumento')}" th:errors="*{numeroDocumento}"></div>
         </div>
 
@@ -32,7 +36,7 @@
         <div class="mb-3">
             <label for="nombrePersona" class="form-label">Propietario</label>
             <input type="text" th:field="*{nombrePersona}" id="nombrePersona" class="form-control"
-                   th:attr="readonly=${action=='view' or action=='delete'}" />
+                   th:attr="readonly=${action=='view' or action=='delete'}" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('nombrePersona')}" th:errors="*{nombrePersona}"></div>
         </div>
 
@@ -48,7 +52,7 @@
         <div class="mb-3">
             <label for="estado" class="form-label">Estado</label>
             <select th:field="*{estado}" id="estado" class="form-select"
-                    th:disabled="${action=='view' or action=='delete'}">
+                    th:disabled="${action=='view' or action=='delete'}" required>
                 <option value="1">Activo</option>
                 <option value="0">Inactivo</option>
             </select>
@@ -59,37 +63,35 @@
         <div class="mb-3">
             <label for="fechaEmision" class="form-label">Fecha de emisión</label>
             <input type="date" th:field="*{fechaEmision}" id="fechaEmision" class="form-control"
-                   th:attr="readonly=${action=='view' or action=='delete'}" />
+                   th:attr="readonly=${action=='view' or action=='delete'}" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('fechaEmision')}" th:errors="*{fechaEmision}"></div>
         </div>
 
-         <!-- Municipio - CORREGIDO -->
+        <!-- Municipio - CORREGIDO -->
         <div class="mb-3">
-    <label for="municipioId" class="form-label">Municipio</label>
-    <select name="municipioId" id="municipioId" class="form-select"
-            th:disabled="${action=='view' or action=='delete'}">
-        <option value="">Seleccione municipio</option>
-       <option th:each="mun : ${municipios}" 
-        th:value="${mun.id_municipio}" 
-        th:text="${mun.nombre_municipio}"
-        th:selected="${documentoArchivo.municipio != null and documentoArchivo.municipio.id_municipio == mun.id_municipio}">
-</option>
-    </select>
-    </div>
+            <label for="municipioId" class="form-label">Municipio</label>
+            <select name="municipioId" id="municipioId" class="form-select"
+                    th:disabled="${action=='view' or action=='delete'}" required>
+                <option value="">Seleccione municipio</option>
+                <option th:each="mun : ${municipios}" 
+                        th:value="${mun.id_municipio}" 
+                        th:text="${mun.nombre_municipio}"
+                        th:selected="${documentoArchivo.municipio != null and documentoArchivo.municipio.id_municipio == mun.id_municipio}"></option>
+            </select>
+        </div>
 
         <!-- Tipo de Documento - CORREGIDO -->
-       <div class="mb-3">
-    <label for="tipoDocumentoId" class="form-label">Tipo de documento</label>
-    <select name="tipoDocumentoId" id="tipoDocumentoId" class="form-select"
-            th:disabled="${action=='view' or action=='delete'}">
-        <option value="">Seleccione tipo de documento</option>
-        <option th:each="tipo : ${tipos_documentos}" 
-                th:value="${tipo.id_tipo_documento}" 
-                th:text="${tipo.nombre_tipo}"
-                th:selected="${documentoArchivo.tipoDocumento != null and documentoArchivo.tipoDocumento.id_tipo_documento == tipo.id_tipo_documento}">
-        </option>
-    </select>
-</div>
+        <div class="mb-3">
+            <label for="tipoDocumentoId" class="form-label">Tipo de documento</label>
+            <select name="tipoDocumentoId" id="tipoDocumentoId" class="form-select"
+                    th:disabled="${action=='view' or action=='delete'}" required>
+                <option value="">Seleccione tipo de documento</option>
+                <option th:each="tipo : ${tipos_documentos}" 
+                        th:value="${tipo.id_tipo_documento}" 
+                        th:text="${tipo.nombre_tipo}"
+                        th:selected="${documentoArchivo.tipoDocumento != null and documentoArchivo.tipoDocumento.id_tipo_documento == tipo.id_tipo_documento}"></option>
+            </select>
+        </div>
 
         <!-- Botones -->
         <div th:if="${action != 'view'}" class="mb-3">
@@ -107,3 +109,4 @@
 </section>
 </body>
 </html>
+

@@ -1,6 +1,7 @@
 package com.SysGroup.Alcaldia.Servicios.Implementaciones;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -39,6 +40,15 @@ public class DocumentoArchivoService implements IDocumentoArchivoService  {
     @Override
     public void eliminarPorId(Integer id) {
         documentoArchivoRepository.deleteById(id);
+    }
+
+    // Nuevos métodos para la validación de unicidad
+    public boolean existsByNumeroDocumento(String numeroDocumento) {
+        return documentoArchivoRepository.existsByNumeroDocumento(numeroDocumento);
+    }
+
+    public Optional<DocumentoArchivo> findByNumeroDocumento(String numeroDocumento) {
+        return documentoArchivoRepository.findByNumeroDocumento(numeroDocumento);
     }
 
 }

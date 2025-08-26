@@ -49,9 +49,10 @@ public Municipio buscarMunicipioPorId(Integer id) {
     return municipioRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Municipio no encontrado con ID: " + id));
 }
+
     
     
-    }
+}
 
 
    

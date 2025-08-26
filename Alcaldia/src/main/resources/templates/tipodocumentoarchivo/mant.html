@@ -15,14 +15,14 @@
     <form th:action="@{${action == 'create' ? '/tipodocumentoarchivo/create' : 
                       action == 'edit' ? '/tipodocumentoarchivo/edit' : 
                       action == 'delete' ? '/tipodocumentoarchivo/delete' : '#'}}" 
-          th:object="${tipoDocumento}" method="post">
+          th:object="${tipoDocumento}" method="post" id="proyectoForm">
 
         <input type="hidden" th:if="${tipoDocumento.id_tipo_documento != null}" th:field="*{id_tipo_documento}" />
 
         <div class="mb-3">
             <label for="nombre_tipo" class="form-label">Nombre</label>
             <input type="text" th:field="*{nombre_tipo}" id="nombre_tipo" class="form-control" 
-                   th:attr="readonly=${action=='view' or action=='delete'}" />
+                   th:attr="readonly=${action=='view' or action=='delete'}" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('nombre_tipo')}" th:errors="*{nombre_tipo}"></div>
         </div>
 
@@ -40,5 +40,26 @@
 
     </form>
 </section>
+
+<script>
+   
+    document.addEventListener('DOMContentLoaded', function() {
+       // Valida el formulario antes de enviarlo
+        form.addEventListener('submit', function(event) {
+            const requiredFields = document.querySelectorAll('#proyectoForm [required]');
+            let allFilled = true;
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    allFilled = false;
+                }
+            });
+
+            if (!allFilled) {
+                event.preventDefault(); // Evita el envío del formulario
+                alert('No se puede guardar. Por favor, completa todos los campos obligatorios.');
+            }
+        });
+    });
+</script>
 </body>
 </html>

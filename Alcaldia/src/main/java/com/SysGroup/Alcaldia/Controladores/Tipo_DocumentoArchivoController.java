@@ -1,5 +1,6 @@
 package com.SysGroup.Alcaldia.Controladores;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.*;
 import java.util.stream.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,9 +107,20 @@ public class Tipo_DocumentoArchivoController {
     }
 
     @PostMapping("/delete")
-    public String deleteTipoDocumento(@ModelAttribute Tipo_DocumentoArchivo tipoDocumento, RedirectAttributes redirect) {
-        tipoDocumentoArchivoService.eliminarPorId(tipoDocumento.getId_tipo_documento());
+    public String deleteTipoDocumento(@ModelAttribute Tipo_DocumentoArchivo tipoDocumento, RedirectAttributes redirect) 
+    { try{tipoDocumentoArchivoService.eliminarPorId(tipoDocumento.getId_tipo_documento());
         redirect.addFlashAttribute("msg", "Tipo de Documento eliminado correctamente");
+    }
+    catch (Exception e) 
+         {
+            // Captura la excepción específica de la base de datos
+            if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
+                redirect.addFlashAttribute("error", "Este tipo no se puede eliminar porque se está usando en otro lugar.");
+            } else {
+                redirect.addFlashAttribute("error", "Ocurrió un error al intentar eliminar el Tipo.");
+            }
+        }
+        
         return "redirect:/tipodocumentoarchivo";
     }
 

@@ -30,6 +30,7 @@ private Date fecha_fin;
     
     private int estado;
 
+    private String imagen_url;
    
     private BigDecimal presupuesto;
 
@@ -100,6 +101,14 @@ private Date fecha_fin;
 
     public void setEstado(int estado) {
         this.estado = estado;
+    }
+
+    public String getImagen_url() {
+        return imagen_url;
+    }
+
+    public void setImagen_url(String imagen_url) {
+        this.imagen_url = imagen_url;
     }
 
 }

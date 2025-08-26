@@ -1,5 +1,6 @@
 package com.SysGroup.Alcaldia.Controladores;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -108,11 +109,19 @@ public class MunicipioController {
     }
 
    @PostMapping("/delete")
-    public String deleteMunicipio(@ModelAttribute Municipio municipio,
-                                 RedirectAttributes redirect) {
-        municipioService.eliminarMunicipio(municipio.getId_municipio()); // Cambiado a getId_municipio()
-        redirect.addFlashAttribute("msg", "Municipio eliminado correctamente");
-        return "redirect:/municipios";
-    }
+    public String deleteMunicipio(@ModelAttribute Municipio municipio,RedirectAttributes redirect) 
+    {
+       try{municipioService.eliminarMunicipio(municipio.getId_municipio()); // Cambiado a getId_municipio()
+        redirect.addFlashAttribute("msg", "Municipio eliminado correctamente");} 
+catch (Exception e) {
+    if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
+        redirect.addFlashAttribute("error", "Este municipio no se puede eliminar porque se está usando en otro lugar.");
+    } else {
+redirect.addFlashAttribute("error", "Ocurrió un error al intentar eliminar el municipio.");
+}
+}
+return "redirect:/municipios";}
 
 }
+
+

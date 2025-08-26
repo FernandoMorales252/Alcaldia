@@ -15,35 +15,35 @@
     <form th:action="@{${action == 'create' ? '/empleados/create' :
                       action == 'edit' ? '/empleados/edit' :
                       action == 'delete' ? '/empleados/delete' : '#'}}"
-          th:object="${empleado}" method="post">
+          th:object="${empleado}" method="post" id="proyectoForm">
 
         <input type="hidden" th:if="${empleado.id_empleado != null}" th:field="*{id_empleado}" />
 
         <div class="mb-3">
             <label for="nombre" class="form-label">Nombre</label>
             <input type="text" th:field="*{nombre}" id="nombre" class="form-control"
-                   th:attr="readonly=${action=='view' or action=='delete'}" />
+                   th:attr="readonly=${action=='view' or action=='delete'}" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
         </div>
 
         <div class="mb-3">
             <label for="apellido" class="form-label">Apellido</label>
             <input type="text" th:field="*{apellido}" id="apellido" class="form-control"
-                   th:attr="readonly=${action=='view' or action=='delete'}" />
+                   th:attr="readonly=${action=='view' or action=='delete'}" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
         </div>
 
         <div class="mb-3">
             <label for="fecha_contratacion" class="form-label">Fecha de Contratación</label>
             <input type="date" th:field="*{fecha_contratacion}" id="fecha_contratacion" class="form-control"
-                   th:attr="readonly=${action=='view' or action=='delete'}" />
+                   th:attr="readonly=${action=='view' or action=='delete'}" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('fecha_contratacion')}" th:errors="*{fecha_contratacion}"></div>
         </div>
         
         <div class="mb-3">
             <label for="estado" class="form-label">Estado</label>
             <select th:field="*{estado}" id="estado" class="form-select"
-                    th:disabled="${action == 'view' || action == 'delete'}">
+                    th:disabled="${action == 'view' || action == 'delete'}" required>
                 <option value="0">Inactivo</option>
                 <option value="1">Activo</option>
             </select>
@@ -53,7 +53,7 @@
         <div class="mb-3">
             <label for="cargo" class="form-label">Cargo</label>
             <select th:field="*{cargo}" id="cargo" class="form-select"
-                    th:disabled="${action == 'view' || action == 'delete'}">
+                    th:disabled="${action == 'view' || action == 'delete'}" required>
                 <option value="">-- Seleccione un Cargo --</option>
                 <option th:each="c : ${cargos}" th:value="${c.id_cargo}" th:text="${c.nombre_cargo}"></option>
             </select>
@@ -63,7 +63,7 @@
         <div class="mb-3">
             <label for="municipio" class="form-label">Municipio</label>
             <select th:field="*{municipio}" id="municipio" class="form-select"
-                    th:disabled="${action == 'view' || action == 'delete'}">
+                    th:disabled="${action == 'view' || action == 'delete'}" required>
                 <option value="">-- Seleccione un Municipio --</option>
                 <option th:each="m : ${municipios}" th:value="${m.id_municipio}" th:text="${m.nombre_municipio}"></option>
             </select>
@@ -84,5 +84,25 @@
 
     </form>
 </section>
+<script>
+   
+    document.addEventListener('DOMContentLoaded', function() {
+       // Valida el formulario antes de enviarlo
+        form.addEventListener('submit', function(event) {
+            const requiredFields = document.querySelectorAll('#proyectoForm [required]');
+            let allFilled = true;
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    allFilled = false;
+                }
+            });
+
+            if (!allFilled) {
+                event.preventDefault(); // Evita el envío del formulario
+                alert('No se puede guardar. Por favor, completa todos los campos obligatorios.');
+            }
+        });
+    });
+</script>
 </body>
 </html>

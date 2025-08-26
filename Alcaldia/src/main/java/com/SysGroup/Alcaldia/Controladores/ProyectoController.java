@@ -91,49 +91,65 @@ public class ProyectoController {
         return "proyecto/mant";
     }
 
-    //--procesar post segun accion--//
-   @PostMapping("/create")
+ //--procesar post segun accion--//
+@PostMapping("/create")
 public String saveNuevo(@RequestParam("municipioId") Integer municipioId,
-                        @ModelAttribute Proyecto proyecto, BindingResult result,
-                        RedirectAttributes redirect, Model model) {
-    if (result.hasErrors()) {
-        model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
-        model.addAttribute("action", "create");
-        return "proyecto/mant";
-    }
-
-    Municipio municipio = municipioService.buscarMunicipioPorId(municipioId);
-    proyecto.setId_municipio(municipio); // Asigna el objeto Municipio
-
-    proyectoService.crearOEditar(proyecto);
-    redirect.addFlashAttribute("mensaje", "El proyecto se ha creado correctamente.");
-    return "redirect:/proyectos";
+@ModelAttribute Proyecto proyecto, BindingResult result,RedirectAttributes redirect, Model model) {
+// Validación de fechas del lado del servidor
+if (proyecto.getFecha_inicio() != null && proyecto.getFecha_fin() != null) {
+if (proyecto.getFecha_fin().before(proyecto.getFecha_inicio())) {
+result.rejectValue("fecha_fin", "error.proyecto", "La fecha de fin debe ser posterior a la fecha de inicio.");
+}
 }
 
-   @PostMapping("/edit")
+if (result.hasErrors()) {
+model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+model.addAttribute("action", "create");
+return "proyecto/mant";
+}
+
+Municipio municipio = municipioService.buscarMunicipioPorId(municipioId);
+proyecto.setId_municipio(municipio); // Asigna el objeto Municipio
+
+proyectoService.crearOEditar(proyecto);
+redirect.addFlashAttribute("mensaje", "El proyecto se ha creado correctamente.");
+return "redirect:/proyectos";
+}
+
+
+@PostMapping("/edit")
 public String saveEdit(@RequestParam("municipioId") Integer municipioId,
-                       @ModelAttribute Proyecto proyecto, BindingResult result,
-                       RedirectAttributes redirect, Model model) {
-    if (result.hasErrors()) {
-        model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
-        model.addAttribute("action", "edit");
-        return "proyecto/mant";
-    }
-
-    Municipio municipio = municipioService.buscarMunicipioPorId(municipioId);
-    proyecto.setId_municipio(municipio); // Asigna el objeto Municipio
-
-    proyectoService.crearOEditar(proyecto);
-    redirect.addFlashAttribute("mensaje", "El proyecto se ha editado correctamente.");
-    return "redirect:/proyectos";
+@ModelAttribute Proyecto proyecto, BindingResult result,
+RedirectAttributes redirect, Model model) {
+//Validacion de fecha
+if (proyecto.getFecha_inicio() != null && proyecto.getFecha_fin() != null) {
+if (proyecto.getFecha_fin().before(proyecto.getFecha_inicio())) {
+result.rejectValue("fecha_fin", "error.proyecto", "La fecha de fin debe ser posterior a la fecha de inicio.");
+}
+}
+if (result.hasErrors()) {
+model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
+model.addAttribute("action", "edit");
+return "proyecto/mant";
 }
 
-    @PostMapping("/delete")
-    public String deleteProyecto(@ModelAttribute Proyecto proyecto,
-                                RedirectAttributes redirect) {
-        proyectoService.eliminarPorId(proyecto.getId_proyecto());
-        redirect.addFlashAttribute("msg", "Proyecto eliminado correctamente");
-        return "redirect:/proyectos";
-    }
+Municipio municipio = municipioService.buscarMunicipioPorId(municipioId);
+proyecto.setId_municipio(municipio); // Asigna el objeto Municipio
+proyectoService.crearOEditar(proyecto);
+redirect.addFlashAttribute("mensaje", "El proyecto se ha editado correctamente.");
+return "redirect:/proyectos"; 
+}
+
+
+@PostMapping("/delete")
+public String deleteProyecto(@ModelAttribute Proyecto proyecto,
+RedirectAttributes redirect) {
+proyectoService.eliminarPorId(proyecto.getId_proyecto());
+redirect.addFlashAttribute("msg", "Proyecto eliminado correctamente");
+return "redirect:/proyectos";
+}
 
 }
+
+
+

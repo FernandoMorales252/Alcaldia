@@ -27,5 +27,4 @@ public class Municipio {
     public void setNombre_municipio(String nombre_municipio) {
         this.nombre_municipio = nombre_municipio;
     }
-
 }

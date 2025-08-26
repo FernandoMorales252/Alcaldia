@@ -31,6 +31,15 @@
     <div class="mb-3">
         <a th:href="@{/municipios/create}" class="btn btn-success">Nuevo Municipio</a>
     </div>
+    <!-- Muestra el mensaje de éxito si existe -->
+<div th:if="${msg}" class="alert alert-success">
+    <span th:text="${msg}"></span>
+</div>
+
+<!-- Muestra el mensaje de error si existe -->
+<div th:if="${error}" class="alert alert-danger">
+    <span th:text="${error}"></span>
+</div>
 
     <table class="table table-bordered">
         <thead>

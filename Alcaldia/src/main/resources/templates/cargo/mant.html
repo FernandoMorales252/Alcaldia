@@ -15,20 +15,20 @@
     <form th:action="@{${action == 'create' ? '/cargo/create' :
                       action == 'edit' ? '/cargo/edit' :
                       action == 'delete' ? '/cargo/delete' : '#'}}"
-          th:object="${cargo}" method="post">
+          th:object="${cargo}" method="post" id="proyectoForm">
 
         <input type="hidden" th:if="${cargo.id_cargo != null}" th:field="*{id_cargo}" />
 
         <div class="mb-3">
             <label for="nombre_cargo" class="form-label">Nombre</label>
             <input type="text" th:field="*{nombre_cargo}" id="nombre_cargo" class="form-control"
-                   th:attr="readonly=${action=='view' or action=='delete'}" />
+                   th:attr="readonly=${action=='view' or action=='delete'}" required/>
             <div class="text-danger" th:if="${#fields.hasErrors('nombre_cargo')}" th:errors="*{nombre_cargo}"></div>
         </div>
         <div class="mb-3">
             <label for="descripcion" class="form-label">Descripción</label>
             <input type="text" th:field="*{descripcion}" id="descripcion" class="form-control"
-                   th:attr="readonly=${action=='view' or action=='delete'}" />
+                   th:attr="readonly=${action=='view' or action=='delete'}" required />
             <div class="text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div> <!-- CORRECCIÓN: Paréntesis cerrando en 'descripcion' -->
         </div>
 
@@ -46,5 +46,73 @@
 
     </form>
 </section>
+
+<script>
+   
+    document.addEventListener('DOMContentLoaded', function() {
+       // Valida el formulario antes de enviarlo
+        form.addEventListener('submit', function(event) {
+            const requiredFields = document.querySelectorAll('#proyectoForm [required]');
+            let allFilled = true;
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    allFilled = false;
+                }
+            });
+
+            if (!allFilled) {
+                event.preventDefault(); // Evita el envío del formulario
+                alert('No se puede guardar. Por favor, completa todos los campos obligatorios.');
+            }
+        });
+    });
+</script>
+
+
+        urlInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            if (url) {
+                // Muestra el contenedor de vista previa y asigna la URL
+                previewContainer.style.display = 'block';
+                previewImage.src = url;
+            } else {
+                // Oculta el contenedor si no hay URL
+                previewContainer.style.display = 'none';
+                previewImage.src = '';
+            }
+        });
+        
+        // Carga la imagen de vista previa inicial si ya existe una URL
+        if (urlInput.value) {
+            const currentImageContainer = document.getElementById('currentImageContainer');
+            if(currentImageContainer) {
+                currentImageContainer.style.display = 'block';
+                const currentImage = currentImageContainer.querySelector('img');
+                if (currentImage) {
+                    currentImage.src = urlInput.value;
+                }
+            } else {
+                 previewContainer.style.display = 'block';
+                 previewImage.src = urlInput.value;
+            }
+        }
+
+        // Valida el formulario antes de enviarlo
+        form.addEventListener('submit', function(event) {
+            const requiredFields = document.querySelectorAll('#proyectoForm [required]');
+            let allFilled = true;
+            requiredFields.forEach(field => {
+                if (!field.value) {
+                    allFilled = false;
+                }
+            });
+
+            if (!allFilled) {
+                event.preventDefault(); // Evita el envío del formulario
+                alert('No se puede guardar. Por favor, completa todos los campos obligatorios.');
+            }
+        });
+    });
+</script>
 </body>
 </html>

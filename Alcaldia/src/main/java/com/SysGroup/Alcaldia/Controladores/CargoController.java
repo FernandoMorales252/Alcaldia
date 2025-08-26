@@ -4,6 +4,7 @@ import com.SysGroup.Alcaldia.Servicios.Interfaces.ICargoService;
 
 import java.util.stream.Collectors;
 import java.util.Optional;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -111,10 +112,21 @@ public class CargoController {
     }
 
     @PostMapping("/delete")
-    public String deleteCargo(@ModelAttribute Cargo cargo, RedirectAttributes redirect) {
-        cargoService.eliminarPorId(cargo.getId_cargo());
+    public String deleteCargo(@ModelAttribute Cargo cargo, RedirectAttributes redirect) 
+    {
+       try{cargoService.eliminarPorId(cargo.getId_cargo());
         redirect.addFlashAttribute("msg", "Cargo eliminado correctamente");
+         } 
+         catch (Exception e) 
+         {
+            // Captura la excepción específica de la base de datos
+            if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
+                redirect.addFlashAttribute("error", "Este cargo no se puede eliminar porque se está usando en otro lugar.");
+            } else {
+                redirect.addFlashAttribute("error", "Ocurrió un error al intentar eliminar el cargo.");
+            }
+        }
         return "redirect:/cargo";
     }
-
+    
 }

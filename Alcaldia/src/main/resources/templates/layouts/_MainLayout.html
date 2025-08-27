@@ -91,6 +91,7 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                   <p>Dashboard</p>
                   <span class="caret"></span>
                 </a>
+               
                 <div class="collapse" id="dashboard">
                   <ul class="nav nav-collapse">
                     <li>
@@ -145,9 +146,13 @@ xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
                         <span class="sub-item">Usuarios</span>
                       </a>
                     </li>
-                    
-                  
-                   
+                     <!-- llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll -->
+                    <li>
+                      <a th:href="@{/login}">
+                        <span class="sub-item">Volever al login</span>
+                      </a>
+                    </li>
+                    <!-- llllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllllll -->
                   </ul>
                 </div>
               </li>

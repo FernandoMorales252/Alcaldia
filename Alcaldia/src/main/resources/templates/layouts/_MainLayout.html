@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>ESFE - ASISTENCIA</title>
@@ -37,10 +38,13 @@
       });
     </script>
 
-    <!-- CSS Files -->
-    <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}" />
-    <link rel="stylesheet" th:href="@{/assets/css/plugins.min.css}" />
-    <link rel="stylesheet" th:href="@{/assets/css/kaiadmin.min.css}" />
+   <link rel="stylesheet" th:href="@{/assets/css/bootstrap.min.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/plugins.min.css}" />
+<link rel="stylesheet" th:href="@{/assets/css/kaiadmin.min.css}" />
+
+
+<link rel="stylesheet" th:href="@{/assets/css/custom.css}" />
+
 
  
   </head>
@@ -106,34 +110,39 @@
                 </a>
                 <div class="collapse" id="base">
                   <ul class="nav nav-collapse">
-                       <li>
+                       <li sec:authorize="hasAuthority('Doc')">
                       <a th:href="@{/tipodocumentoarchivo}">
                         <span class="sub-item">Tipos de documentos</span>
                       </a>
                     </li>
-                     <li>
+                     <li sec:authorize="hasAuthority('Doc')">
                       <a th:href="@{/documentos}">
                         <span class="sub-item">Documentos</span>
                       </a>
                     </li>
-                    <li>
+                    <li sec:authorize="hasAuthority('admin')">
                       <a th:href="@{/municipios}">
                         <span class="sub-item">Municipios</span>
                       </a>
                     </li>
                     <li>
-                      <a th:href="@{/cargo}">
+                      <a th:href="@{/cargo}" sec:authorize="hasAuthority('RRHH')">
                         <span class="sub-item">Cargos</span>
                       </a>
                     </li>
-                     <li>
+                     <li sec:authorize="hasAuthority('RRHH')">
                       <a th:href="@{/empleados}">
                         <span class="sub-item">Empleados</span>
                       </a>
                     </li>
-                     <li>
+                     <li sec:authorize="hasAnyAuthority('Doc','admin')">
                       <a th:href="@{/proyectos}">
                         <span class="sub-item">Proyectos</span>
+                      </a>
+                    </li>
+                    <li sec:authorize="hasAuthority('admin')">
+                      <a th:href="@{/usuarios}">
+                        <span class="sub-item">Usuarios</span>
                       </a>
                     </li>
                     

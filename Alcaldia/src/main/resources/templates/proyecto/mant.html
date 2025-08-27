@@ -1,205 +1,721 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org"
+
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+
       layout:decorate="~{layouts/_MainLayout}">
+
 <head>
+
     <title layout:fragment="title" th:text="'Proyecto - ' + ${action}">Proyecto</title>
-</head>
-<body>
-<section layout:fragment="content">
-    <h2 th:text="${action == 'create' ? 'Crear nuevo proyecto' :
-                     action == 'edit' ? 'Editar proyecto' :
-                     action == 'view' ? 'Ver proyecto' :
-                     action == 'delete' ? 'Eliminar proyecto' : 'Proyecto'}"></h2>
 
-    <form th:action="@{${action == 'create' ? '/proyectos/create' :
-                           action == 'edit' ? '/proyectos/edit' :
-                           action == 'delete' ? '/proyectos/delete' : '#'}}"
-          th:object="${proyecto}" method="post" id="proyectoForm">
+    <style layout:fragment="styles">
 
-        <input type="hidden" th:if="${proyecto.id_proyecto != null}" th:field="*{id_proyecto}" />
-        
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="nombre" class="form-label">Nombre del Proyecto</label>
-                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control"
-                           th:attr="readonly=${action=='view' or action=='delete'}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
-                </div>
-            </div>
+        /* ===== Paleta base ===== */
 
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="estado" class="form-label">Estado</label>
-                    <select th:field="*{estado}" id="estado" class="form-control"
-                             th:attr="disabled=${action=='view' or action=='delete'}">
-                        <option value="1" th:selected="${proyecto.estado == 1}">Activo</option>
-                        <option value="0" th:selected="${proyecto.estado == 0}">Inactivo</option>
-                    </select>
-                    <div class="text-danger" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></div>
-                </div>
-            </div>
-        </div>
+        :root {
 
-        <div class="mb-3">
-            <label for="descripcion" class="form-label">Descripción</label>
-            <textarea th:field="*{descripcion}" id="descripcion" class="form-control" rows="3"
-                      th:attr="readonly=${action=='view' or action=='delete'}" required></textarea>
-            <div class="text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
-        </div>
+            --main-dark: #2C3E50 !important;
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
-                    <input type="date" th:field="*{fecha_inicio}" id="fecha_inicio" class="form-control"
-                           th:attr="readonly=${action=='view' or action=='delete'}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('fecha_inicio')}" th:errors="*{fecha_inicio}"></div>
-                </div>
-            </div>
+            --primary-accent: #2E86C1 !important;
 
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="fecha_fin" class="form-label">Fecha de Fin</label>
-                    <input type="date" th:field="*{fecha_fin}" id="fecha_fin" class="form-control"
-                           th:attr="readonly=${action=='view' or action=='delete'}" required />
-                    <div id="fecha-fin-error-client" class="text-danger mt-2" style="display: none;"></div>
-                    <div class="text-danger" th:if="${#fields.hasErrors('fecha_fin')}" th:errors="*{fecha_fin}"></div>
-                </div>
-            </div>
-        </div>
+            --secondary-accent: #E67E22 !important;
 
-        <div class="row">
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="presupuesto" class="form-label">Presupuesto</label>
-                    <input type="number" step="0.01" th:field="*{presupuesto}" id="presupuesto" class="form-control"
-                           th:attr="readonly=${action=='view' or action=='delete'}" required />
-                    <div class="text-danger" th:if="${#fields.hasErrors('presupuesto')}" th:errors="*{presupuesto}"></div>
-                </div>
-            </div>
+            --success: #27AE60 !important;
 
-            <div class="col-md-6">
-                <div class="mb-3">
-                    <label for="municipioId" class="form-label">Municipio</label>
-                    <select name="municipioId" id="municipioId" class="form-control"
-                             th:attr="disabled=${action=='view' or action=='delete'}" required>
-                        <option value="">Seleccionar municipio</option>
-                        <option th:each="mun : ${municipios}"
-                                th:value="${mun.id_municipio}"
-                                th:text="${mun.nombre_municipio}"
-                                th:selected="${proyecto.id_municipio != null and proyecto.id_municipio.id_municipio == mun.id_municipio}"></option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Campo para la URL de la imagen -->
-        <div class="mb-3">
-            <label for="imagen_url" class="form-label">URL de la Imagen</label>
-            <input type="text" th:field="*{imagen_url}" id="imagen_url" class="form-control"
-                   placeholder="Ejemplo: https://ejemplo.com/imagen.jpg"
-                   th:attr="readonly=${action=='view' or action=='delete'}"  />
-        </div>
+            --danger: #C0392B !important;
 
-        <!-- Contenedor para la vista previa de la imagen (funciona para URLs nuevas y existentes) -->
-        <div class="mb-3 text-center">
-            <div th:if="${proyecto.imagen_url != null and not #strings.isEmpty(proyecto.imagen_url)}" 
-                 class="mt-2" id="currentImageContainer">
-                 <p>Imagen actual:</p>
-                 <img th:src="@{${proyecto.imagen_url}}" alt="Imagen del proyecto" 
-                      style="max-width: 200px; height: auto; border-radius: 8px;" id="imagePreview" />
-            </div>
-            <div th:unless="${proyecto.imagen_url != null and not #strings.isEmpty(proyecto.imagen_url)}" 
-                 id="imagePreviewContainer" style="display: none;">
-                 <p>Vista previa:</p>
-                 <img id="imagePreview" alt="Vista previa de la imagen" 
-                      style="max-width: 200px; height: auto; border-radius: 8px;" />
-            </div>
-        </div>
-        
-        <div th:if="${action != 'view'}" class="mb-3">
-            <button type="submit"
-                    th:text="${action == 'delete' ? 'Confirmar Eliminación' : 'Guardar'}"
-                    class="btn"
-                    th:classappend="${action == 'delete' ? 'btn-danger' : 'btn-primary'}"></button>
-            <a th:href="@{/proyectos}" class="btn btn-secondary">Cancelar</a>
-        </div>
+            --text-light: #ECF0F1 !important;
 
-        <div th:if="${action == 'view'}" class="mb-3">
-            <a th:href="@{/proyectos}" class="btn btn-secondary">Regresar</a>
-        </div>
-    </form>
-</section>
+            --text-soft: #BDC3C7 !important;
 
-<!-- Script para la previsualización de la imagen -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const urlInput = document.getElementById('imagen_url');
-        const previewImage = document.getElementById('imagePreview');
-        const previewContainer = document.getElementById('imagePreviewContainer');
-        const form = document.getElementById('proyectoForm');
+            --background: #F4F6F9 !important;
 
-        urlInput.addEventListener('input', function() {
-            const url = this.value.trim();
-            if (url) {
-                // Muestra el contenedor de vista previa y asigna la URL
-                previewContainer.style.display = 'block';
-                previewImage.src = url;
-            } else {
-                // Oculta el contenedor si no hay URL
-                previewContainer.style.display = 'none';
-                previewImage.src = '';
-            }
-        });
-        
-        // Carga la imagen de vista previa inicial si ya existe una URL
-        if (urlInput.value) {
-            const currentImageContainer = document.getElementById('currentImageContainer');
-            if(currentImageContainer) {
-                currentImageContainer.style.display = 'block';
-                const currentImage = currentImageContainer.querySelector('img');
-                if (currentImage) {
-                    currentImage.src = urlInput.value;
-                }
-            } else {
-                 previewContainer.style.display = 'block';
-                 previewImage.src = urlInput.value;
-            }
+            --white: #ffffff !important;
+
+            --shadow: rgba(0,0,0,0.08) !important;
+
         }
 
-        // Valida el formulario antes de enviarlo
-        form.addEventListener('submit', function(event) {
-            const requiredFields = document.querySelectorAll('#proyectoForm [required]');
-            let allFilled = true;
-            requiredFields.forEach(field => {
-                if (!field.value) {
-                    allFilled = false;
+
+
+        /* ===== General ===== */
+
+        body {
+
+            background-color: var(--background) !important;
+
+            font-family: "Segoe UI", "Roboto", sans-serif !important;
+
+            color: var(--main-dark) !important;
+
+            font-size: 15px !important;
+
+            line-height: 1.5 !important;
+
+        }
+
+
+
+        h2 {
+
+            font-size: 2rem !important;
+
+            color: var(--main-dark) !important;
+
+            font-weight: 600 !important;
+
+            padding-bottom: 10px !important;
+
+            margin-bottom: 20px !important;
+
+            border-bottom: 3px solid var(--primary-accent) !important;
+
+        }
+
+
+
+        /* ===== Formulario ===== */
+
+        form {
+
+            background-color: var(--white) !important;
+
+            padding: 25px !important;
+
+            border-radius: 10px !important;
+
+            box-shadow: 0 6px 14px var(--shadow) !important;
+
+            max-width: 700px !important;
+
+            margin: 0 auto 30px auto !important;
+
+        }
+
+
+
+        label {
+
+            font-weight: 600 !important;
+
+            color: var(--main-dark) !important;
+
+            margin-bottom: 5px !important;
+
+            display: block !important;
+
+        }
+
+
+
+        .form-control, .form-select, .form-label {
+
+            border: 1px solid var(--text-soft) !important;
+
+            border-radius: 6px !important;
+
+            padding: 8px 12px !important;
+
+            width: 100% !important;
+
+            background-color: var(--white) !important;
+
+            color: var(--main-dark) !important;
+
+            font-size: 0.95rem !important;
+
+            transition: all 0.2s ease !important;
+
+        }
+
+
+
+        .form-control:focus, .form-select:focus {
+
+            border-color: var(--primary-accent) !important;
+
+            box-shadow: 0 0 5px rgba(46, 134, 193, 0.3) !important;
+
+            outline: none !important;
+
+        }
+
+
+
+        .text-danger {
+
+            font-size: 0.85rem !important;
+
+            margin-top: 3px !important;
+
+            color: var(--danger) !important;
+
+        }
+
+
+
+        /* ===== Botones ===== */
+
+        .btn {
+
+            font-weight: 500 !important;
+
+            border-radius: 6px !important;
+
+            border: none !important;
+
+            padding: 8px 16px !important;
+
+            font-size: 0.95rem !important;
+
+            transition: all 0.2s ease !important;
+
+            box-shadow: 0 2px 6px var(--shadow) !important;
+
+            margin-right: 5px !important;
+
+        }
+
+
+
+        .btn:hover {
+
+            transform: translateY(-2px) !important;
+
+        }
+
+
+
+        .btn-primary {
+
+            background-color: var(--primary-accent) !important;
+
+            color: var(--white) !important;
+
+        }
+
+
+
+        .btn-success {
+
+            background-color: var(--success) !important;
+
+            color: var(--white) !important;
+
+        }
+
+
+
+        .btn-danger {
+
+            background-color: var(--danger) !important;
+
+            color: var(--white) !important;
+
+        }
+
+
+
+        .btn-secondary {
+
+            background-color: var(--text-soft) !important;
+
+            color: var(--main-dark) !important;
+
+        }
+
+
+
+        .btn-secondary:hover {
+
+            background-color: var(--primary-accent) !important;
+
+            color: var(--white) !important;
+
+        }
+
+
+
+        /* ===== Mensajes ===== */
+
+        .alert {
+
+            border-radius: 6px !important;
+
+            padding: 12px 20px !important;
+
+            font-size: 0.95rem !important;
+
+            max-width: 700px !important;
+
+            margin: 15px auto !important;
+
+            box-shadow: 0 4px 10px var(--shadow) !important;
+
+        }
+
+        
+
+        /* Flexbox utilities para el responsive */
+
+        .row {
+
+            display: flex !important;
+
+            flex-wrap: wrap !important;
+
+            margin-right: -15px !important;
+
+            margin-left: -15px !important;
+
+        }
+
+        
+
+        .col-md-6 {
+
+            flex: 0 0 50% !important;
+
+            max-width: 50% !important;
+
+            position: relative !important;
+
+            width: 100% !important;
+
+            padding-right: 15px !important;
+
+            padding-left: 15px !important;
+
+        }
+
+        
+
+        .mb-3 {
+
+            margin-bottom: 1rem !important;
+
+        }
+
+
+
+        @media (max-width: 768px) {
+
+            .col-md-6 {
+
+                flex: 0 0 100% !important;
+
+                max-width: 100% !important;
+
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<section layout:fragment="content" class="container mx-auto mt-5">
+
+    <h2 th:text="${action == 'create' ? 'Crear nuevo proyecto' :
+
+                     action == 'edit' ? 'Editar proyecto' :
+
+                     action == 'view' ? 'Ver proyecto' :
+
+                     action == 'delete' ? 'Eliminar proyecto' : 'Proyecto'}"></h2>
+
+
+
+    <form th:action="@{${action == 'create' ? '/proyectos/create' :
+
+                           action == 'edit' ? '/proyectos/edit' :
+
+                           action == 'delete' ? '/proyectos/delete' : '#'}}"
+
+          th:object="${proyecto}" method="post" id="proyectoForm">
+
+
+
+        <input type="hidden" th:if="${proyecto.id_proyecto != null}" th:field="*{id_proyecto}" />
+
+
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <div class="mb-3">
+
+                    <label for="nombre" class="form-label">Nombre del Proyecto</label>
+
+                    <input type="text" th:field="*{nombre}" id="nombre" class="form-control"
+
+                           th:attr="readonly=${action=='view' or action=='delete'}" required />
+
+                    <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="col-md-6">
+
+                <div class="mb-3">
+
+                    <label for="estado" class="form-label">Estado</label>
+
+                    <select th:field="*{estado}" id="estado" class="form-control"
+
+                            th:attr="disabled=${action=='view' or action=='delete'}">
+
+                        <option value="1" th:selected="${proyecto.estado == 1}">Activo</option>
+
+                        <option value="0" th:selected="${proyecto.estado == 0}">Inactivo</option>
+
+                    </select>
+
+                    <div class="text-danger" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="mb-3">
+
+            <label for="descripcion" class="form-label">Descripción</label>
+
+            <textarea th:field="*{descripcion}" id="descripcion" class="form-control" rows="3"
+
+                      th:attr="readonly=${action=='view' or action=='delete'}" required></textarea>
+
+            <div class="text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
+
+        </div>
+
+
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <div class="mb-3">
+
+                    <label for="fecha_inicio" class="form-label">Fecha de Inicio</label>
+
+                    <input type="date" th:field="*{fecha_inicio}" id="fecha_inicio" class="form-control"
+
+                           th:attr="readonly=${action=='view' or action=='delete'}" required />
+
+                    <div class="text-danger" th:if="${#fields.hasErrors('fecha_inicio')}" th:errors="*{fecha_inicio}"></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="col-md-6">
+
+                <div class="mb-3">
+
+                    <label for="fecha_fin" class="form-label">Fecha de Fin</label>
+
+                    <input type="date" th:field="*{fecha_fin}" id="fecha_fin" class="form-control"
+
+                           th:attr="readonly=${action=='view' or action=='delete'}" required />
+
+                    <div id="fecha-fin-error-client" class="text-danger mt-2" style="display: none;"></div>
+
+                    <div class="text-danger" th:if="${#fields.hasErrors('fecha_fin')}" th:errors="*{fecha_fin}"></div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <div class="mb-3">
+
+                    <label for="presupuesto" class="form-label">Presupuesto</label>
+
+                    <input type="number" step="0.01" th:field="*{presupuesto}" id="presupuesto" class="form-control"
+
+                           th:attr="readonly=${action=='view' or action=='delete'}" required />
+
+                    <div class="text-danger" th:if="${#fields.hasErrors('presupuesto')}" th:errors="*{presupuesto}"></div>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="col-md-6">
+
+                <div class="mb-3">
+
+                    <label for="municipioId" class="form-label">Municipio</label>
+
+                    <select name="municipioId" id="municipioId" class="form-control"
+
+                            th:attr="disabled=${action=='view' or action=='delete'}" required>
+
+                        <option value="">Seleccionar municipio</option>
+
+                        <option th:each="mun : ${municipios}"
+
+                                th:value="${mun.id_municipio}"
+
+                                th:text="${mun.nombre_municipio}"
+
+                                th:selected="${proyecto.id_municipio != null and proyecto.id_municipio.id_municipio == mun.id_municipio}"></option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Campo para la URL de la imagen -->
+
+        <div class="mb-3">
+
+            <label for="imagen_url" class="form-label">URL de la Imagen</label>
+
+            <input type="text" th:field="*{imagen_url}" id="imagen_url" class="form-control"
+
+                   placeholder="Ejemplo: https://ejemplo.com/imagen.jpg"
+
+                   th:attr="readonly=${action=='view' or action=='delete'}"  />
+
+        </div>
+
+
+
+        <!-- Contenedor para la vista previa de la imagen (funciona para URLs nuevas y existentes) -->
+
+        <div class="mb-3 text-center">
+
+            <div th:if="${proyecto.imagen_url != null and not #strings.isEmpty(proyecto.imagen_url)}"
+
+                 class="mt-2" id="currentImageContainer">
+
+                <p>Imagen actual:</p>
+
+                <img th:src="@{${proyecto.imagen_url}}" alt="Imagen del proyecto"
+
+                     style="max-width: 200px; height: auto; border-radius: 8px;" id="imagePreview" />
+
+            </div>
+
+            <div th:unless="${proyecto.imagen_url != null and not #strings.isEmpty(proyecto.imagen_url)}"
+
+                 id="imagePreviewContainer" style="display: none;">
+
+                <p>Vista previa:</p>
+
+                <img id="imagePreview" alt="Vista previa de la imagen"
+
+                     style="max-width: 200px; height: auto; border-radius: 8px;" />
+
+            </div>
+
+        </div>
+
+
+
+        <div th:if="${action != 'view'}" class="mb-3">
+
+            <button type="submit"
+
+                    th:text="${action == 'delete' ? 'Confirmar Eliminación' : 'Guardar'}"
+
+                    class="btn"
+
+                    th:classappend="${action == 'delete' ? 'btn-danger' : 'btn-primary'}"></button>
+
+            <a th:href="@{/proyectos}" class="btn btn-secondary">Cancelar</a>
+
+        </div>
+
+
+
+        <div th:if="${action == 'view'}" class="mb-3">
+
+            <a th:href="@{/proyectos}" class="btn btn-secondary">Regresar</a>
+
+        </div>
+
+    </form>
+
+</section>
+
+
+
+<!-- Script para la previsualización de la imagen -->
+
+<script layout:fragment="script">
+
+    document.addEventListener('DOMContentLoaded', function() {
+
+        const urlInput = document.getElementById('imagen_url');
+
+        const previewImage = document.getElementById('imagePreview');
+
+        const previewContainer = document.getElementById('imagePreviewContainer');
+
+        const form = document.getElementById('proyectoForm');
+
+        const fechaInicioInput = document.getElementById('fecha_inicio');
+
+        const fechaFinInput = document.getElementById('fecha_fin');
+
+        const fechaFinErrorClient = document.getElementById('fecha-fin-error-client');
+
+        
+
+        // Función para mostrar/ocultar la vista previa de la imagen
+
+        function updateImagePreview() {
+
+            const url = urlInput.value.trim();
+
+            const currentImageContainer = document.getElementById('currentImageContainer');
+
+
+
+            if (url) {
+
+                if (currentImageContainer) {
+
+                    currentImageContainer.style.display = 'none';
+
                 }
+
+                previewContainer.style.display = 'block';
+
+                previewImage.src = url;
+
+            } else {
+
+                 if (currentImageContainer) {
+
+                    currentImageContainer.style.display = 'block';
+
+                }
+
+                previewContainer.style.display = 'none';
+
+                previewImage.src = '';
+
+            }
+
+        }
+
+        
+
+        urlInput.addEventListener('input', updateImagePreview);
+
+        
+
+        // Carga la imagen de vista previa inicial si ya existe una URL
+
+        if (urlInput.value) {
+
+            updateImagePreview();
+
+        }
+
+
+
+        // Validación del formulario al enviarlo
+
+        form.addEventListener('submit', function(event) {
+
+            let valid = true;
+
+            
+
+            // Validación de campos requeridos
+
+            const requiredFields = document.querySelectorAll('#proyectoForm [required]');
+
+            requiredFields.forEach(field => {
+
+                if (!field.value) {
+
+                    valid = false;
+
+                }
+
             });
 
-            if (!allFilled) {
-                event.preventDefault(); // Evita el envío del formulario
+
+
+            if (!valid) {
+
+                event.preventDefault();
+
                 alert('No se puede guardar. Por favor, completa todos los campos obligatorios.');
+
+                return;
+
             }
+
+
+
+            // Validación de fechas del lado del cliente
+
+            if (fechaInicioInput.value && fechaFinInput.value) {
+
+                const fechaInicio = new Date(fechaInicioInput.value);
+
+                const fechaFin = new Date(fechaFinInput.value);
+
+
+
+                if (fechaFin < fechaInicio) {
+
+                    fechaFinErrorClient.textContent = 'La fecha de fin debe ser posterior a la fecha de inicio.';
+
+                    fechaFinErrorClient.style.display = 'block';
+
+                    event.preventDefault(); // Evita el envío del formulario
+
+                } else {
+
+                    fechaFinErrorClient.style.display = 'none';
+
+                }
+
+            }
+
         });
 
-        // Validación de fechas del lado del cliente
-const fechaInicio = new Date(fechaInicioInput.value);
-const fechaFin = new Date(fechaFinInput.value);
-
-// Validación de fechas del lado del cliente
-if (fechaInicioInput.value && fechaFinInput.value && fechaFin < fechaInicio) {
-    fechaFinErrorClient.textContent = 'La fecha de fin debe ser posterior a la fecha de inicio.';
-    fechaFinErrorClient.style.display = 'block';
-    valid = false;
-}
-if (!valid) {
-event.preventDefault(); // Evita el envío del formulario
- }
-});
+    });
 
 </script>
+
 </body>
+
 </html>

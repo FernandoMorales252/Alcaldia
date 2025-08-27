@@ -1,81 +1,161 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/_MainLayout}">
-<head>
-    <title layout:fragment="title">Listado de municipios</title>
-</head>
-<body>
-<section layout:fragment="content">
-    <div th:if="${msg != null }">
-        <script>
-            swal({
-            title:"Confirmación",
-            text: '[[ ${msg} ]]',
-            icon: "success"
-            });
-        </script>
-    </div>
-    <div th:if="${error != null }">
-        <script>
-            swal({
-            title:"Error",
-            text: '[[ ${error} ]]',
-            icon: "error"
-            });
-        </script>
-    </div>
+<!DOCTYPE html> 
 
-    <h2>Listado de municipios</h2>
+ <html xmlns:th="http://www.thymeleaf.org" 
 
-    <div class="mb-3">
-        <a th:href="@{/municipios/create}" class="btn btn-success">Nuevo Municipio</a>
-    </div>
-    <!-- Muestra el mensaje de éxito si existe -->
-<div th:if="${msg}" class="alert alert-success">
-    <span th:text="${msg}"></span>
-</div>
+       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
 
-<!-- Muestra el mensaje de error si existe -->
-<div th:if="${error}" class="alert alert-danger">
-    <span th:text="${error}"></span>
-</div>
+       layout:decorate="~{layouts/_MainLayout}"> 
 
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nombre del Municipio</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr th:each="municipio : ${municipio.content}">
-                <td th:text="${municipio.id_municipio}">ID</td>
-                <td th:text="${municipio.nombre_municipio}">Nombre</td>
-                <td>
-                    <a th:href="@{/municipios/view/{id}(id=${municipio.id_municipio})}" class="btn btn-info btn-sm">Ver</a>
-                    <a th:href="@{/municipios/edit/{id}(id=${municipio.id_municipio})}" class="btn btn-warning btn-sm">Editar</a>
-                    <a th:href="@{/municipios/delete/{id}(id=${municipio.id_municipio})}" class="btn btn-danger btn-sm">Eliminar</a>
-                </td>
-            </tr>
-            <tr th:if="${municipio.totalElements == 0}">
-                <td colspan="3" class="text-center">No hay municipios registrados.</td>
-            </tr>
-        </tbody>
-    </table>
+ <head> 
 
-    <nav th:if="${pageNumbers}">
-        <ul class="pagination justify-content-center">
-            <li th:each="pageNum : ${pageNumbers}" class="page-item"
-                th:classappend="${pageNum == municipio.number + 1} ? 'active'">
-                <a class="page-link"
-                   th:href="@{/municipios(page=${pageNum},size=${municipio.size})}"
-                   th:text="${pageNum}"></a>
-            </li>
-        </ul>
-    </nav>
+     <title layout:fragment="title">Listado de municipios</title> 
 
-</section>
-</body>
-</html>
+ </head> 
+
+ <body> 
+
+ <section layout:fragment="content"> 
+
+     <div th:if="${msg != null }"> 
+
+         <script> 
+
+             swal({ 
+
+             title:"Confirmación", 
+
+             text: '[[ ${msg} ]]', 
+
+             icon: "success" 
+
+             }); 
+
+         </script> 
+
+     </div> 
+
+     <div th:if="${error != null }"> 
+
+         <script> 
+
+             swal({ 
+
+             title:"Error", 
+
+             text: '[[ ${error} ]]', 
+
+             icon: "error" 
+
+             }); 
+
+         </script> 
+
+     </div> 
+
+
+
+     <h2>Listado de municipios</h2> 
+
+
+
+     <div class="mb-3"> 
+
+         <a th:href="@{/municipios/create}" class="btn btn-success">Nuevo Municipio</a> 
+
+     </div> 
+
+     <!-- Muestra el mensaje de éxito si existe --> 
+
+ <div th:if="${msg}" class="alert alert-success"> 
+
+     <span th:text="${msg}"></span> 
+
+ </div> 
+
+
+
+ <!-- Muestra el mensaje de error si existe --> 
+
+ <div th:if="${error}" class="alert alert-danger"> 
+
+     <span th:text="${error}"></span> 
+
+ </div> 
+
+
+
+     <table class="table table-bordered"> 
+
+         <thead> 
+
+         <tr> 
+
+             <th>ID</th> 
+
+             <th>Nombre del Municipio</th> 
+
+             <th>Acciones</th> 
+
+         </tr> 
+
+         </thead> 
+
+         <tbody> 
+
+             <tr th:each="municipio : ${municipio.content}"> 
+
+                 <td th:text="${municipio.id_municipio}">ID</td> 
+
+                 <td th:text="${municipio.nombre_municipio}">Nombre</td> 
+
+                 <td> 
+
+                     <a th:href="@{/municipios/view/{id}(id=${municipio.id_municipio})}" class="btn btn-info btn-sm">Ver</a> 
+
+                     <a th:href="@{/municipios/edit/{id}(id=${municipio.id_municipio})}" class="btn btn-warning btn-sm">Editar</a> 
+
+                     <a th:href="@{/municipios/delete/{id}(id=${municipio.id_municipio})}" class="btn btn-danger btn-sm">Eliminar</a> 
+
+                 </td> 
+
+             </tr> 
+
+             <tr th:if="${municipio.totalElements == 0}"> 
+
+                 <td colspan="3" class="text-center">No hay municipios registrados.</td> 
+
+             </tr> 
+
+         </tbody> 
+
+     </table> 
+
+
+
+     <nav th:if="${pageNumbers}"> 
+
+         <ul class="pagination justify-content-center"> 
+
+             <li th:each="pageNum : ${pageNumbers}" class="page-item" 
+
+                 th:classappend="${pageNum == municipio.number + 1} ? 'active'"> 
+
+                 <a class="page-link" 
+
+                    th:href="@{/municipios(page=${pageNum},size=${municipio.size})}" 
+
+                    th:text="${pageNum}"></a> 
+
+             </li> 
+
+         </ul> 
+
+     </nav> 
+
+
+
+ </section> 
+
+ </body> 
+
+ </html> 

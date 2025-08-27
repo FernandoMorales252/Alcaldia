@@ -1,122 +1,243 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/_MainLayout}">
-<head>
-    <title layout:fragment="title">Listado de Empleados</title>
-</head>
-<body>
-<section layout:fragment="content">
-    <div th:if="${msg != null }">
-        <script>
-            swal({
-            title:"Confirmación",
-            text: '[[ ${msg} ]]',
-            icon: "success"
-            });
-        </script>
-    </div>
-    <div th:if="${error != null }">
-        <script>
-            swal({
-            title:"Error",
-            text: '[[ ${error} ]]',
-            icon: "error"
-            });
-        </script>
-    </div>
+<!DOCTYPE html> 
 
-    <h2>Listado de Empleados</h2>
+ <html xmlns:th="http://www.thymeleaf.org" 
 
-    <div class="mb-3">
-        <a th:href="@{/empleados/create}" class="btn btn-success">Crear Nuevo Empleado</a>
-    </div>
+       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
 
-         <!-- Para generacion del PDF -->
-    <div class="mb-4 p-3 border rounded bg-light">
-        <h4 class="mb-3">Generar Reporte PDF con Filtros</h4>
-        <form th:action="@{/empleados/empleadoPDF}" method="get">
-            <div class="row">
-                <div class="col-md-3 form-group">
-                    <label for="fechaInicio">Fecha Contratación (Inicio):</label>
-                    <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" />
-                </div>
-                <div class="col-md-3 form-group">
-                    <label for="fechaFin">Fecha Contratación (Fin):</label>
-                    <input type="date" id="fechaFin" name="fechaFin" class="form-control" />
-                </div>
-                <div class="col-md-3 form-group">
-                    <label for="id_Cargo">Cargo:</label>
-                    <select id="id_Cargo" name="id_Cargo" class="form-control">
-                        <option value="">Todos</option>
-                        <option th:each="cargo : ${cargos}" th:value="${cargo.id_cargo}" th:text="${cargo.nombre_cargo}"></option>
-                    </select>
-                </div>
-                <div class="col-md-3 form-group">
-                    <label for="id_Municipio">Municipio:</label>
-                    <select id="id_Municipio" name="id_Municipio" class="form-control">
-                        <option value="">Todos</option>
-                        <option th:each="municipio : ${municipios}" th:value="${municipio.id_municipio}" th:text="${municipio.nombre_municipio}"></option>
-                    </select>
-                </div>
-                <div class="col-md-3 form-group">
-                    <label for="estado">Estado:</label>
-                    <select id="estado" name="estado" class="form-control">
-                        <option value="">Todos</option>
-                        <option value="1">Activo</option>
-                        <option value="0">Inactivo</option>
-                    </select>
-                </div>
-            </div>
-            <button type="submit" class="btn btn-primary mt-3">Generar Reporte PDF</button>
-        </form>
-    </div>
+       layout:decorate="~{layouts/_MainLayout}"> 
 
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre Completo</th>
-                    <th>Cargo</th>
-                    <th>Municipio</th>
-                    <th>Fecha de Contratación</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="empleado : ${empleados.content}">
-                    <td th:text="${empleado.id_empleado}"></td>
-                    <td th:text="${empleado.nombre} + ' ' + ${empleado.apellido}"></td>
-                    <td th:text="${empleado.cargo?.nombre_cargo}"></td>
-                    <td th:text="${empleado.municipio?.nombre_municipio}"></td>
-                    <td th:text="${empleado.fecha_contratacion}"></td>
-                    <td th:text="${empleado.estado == 1 ? 'Activo' : 'Inactivo'}"></td>
-                    <td>
-                        <a th:href="@{/empleados/view/{id}(id=${empleado.id_empleado})}" class="btn btn-info btn-sm">Ver</a>
-                        <a th:href="@{/empleados/edit/{id}(id=${empleado.id_empleado})}" class="btn btn-warning btn-sm">Editar</a>
-                        <a th:href="@{/empleados/delete/{id}(id=${empleado.id_empleado})}" class="btn btn-danger btn-sm">Eliminar</a>
-                    </td>
-                </tr>
-                <tr th:if="${empleados.totalElements == 0}">
-                    <td colspan="7" class="text-center">No hay empleados registrados.</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+ <head> 
 
-    <nav th:if="${pageNumbers}">
-        <ul class="pagination justify-content-center">
-            <li th:each="pageNum : ${pageNumbers}" class="page-item"
-                th:classappend="${pageNum == empleados.number + 1} ? 'active'">
-                <a class="page-link"
-                   th:href="@{/empleados(page=${pageNum},size=${empleados.size})}"
-                   th:text="${pageNum}"></a>
-            </li>
-        </ul>
-    </nav>
-    
-</section>
-</body>
-</html>
+     <title layout:fragment="title">Listado de Empleados</title> 
+
+ </head> 
+
+ <body> 
+
+ <section layout:fragment="content"> 
+
+     <div th:if="${msg != null }"> 
+
+         <script> 
+
+             swal({ 
+
+             title:"Confirmación", 
+
+             text: '[[ ${msg} ]]', 
+
+             icon: "success" 
+
+             }); 
+
+         </script> 
+
+     </div> 
+
+     <div th:if="${error != null }"> 
+
+         <script> 
+
+             swal({ 
+
+             title:"Error", 
+
+             text: '[[ ${error} ]]', 
+
+             icon: "error" 
+
+             }); 
+
+         </script> 
+
+     </div> 
+
+
+
+     <h2>Listado de Empleados</h2> 
+
+
+
+     <div class="mb-3"> 
+
+         <a th:href="@{/empleados/create}" class="btn btn-success">Crear Nuevo Empleado</a> 
+
+     </div> 
+
+
+
+          <!-- Para generacion del PDF --> 
+
+     <div class="mb-4 p-3 border rounded bg-light"> 
+
+         <h4 class="mb-3">Generar Reporte PDF con Filtros</h4> 
+
+         <form th:action="@{/empleados/empleadoPDF}" method="get"> 
+
+             <div class="row"> 
+
+                 <div class="col-md-3 form-group"> 
+
+                     <label for="fechaInicio">Fecha Contratación (Inicio):</label> 
+
+                     <input type="date" id="fechaInicio" name="fechaInicio" class="form-control" /> 
+
+                 </div> 
+
+                 <div class="col-md-3 form-group"> 
+
+                     <label for="fechaFin">Fecha Contratación (Fin):</label> 
+
+                     <input type="date" id="fechaFin" name="fechaFin" class="form-control" /> 
+
+                 </div> 
+
+                 <div class="col-md-3 form-group"> 
+
+                     <label for="id_Cargo">Cargo:</label> 
+
+                     <select id="id_Cargo" name="id_Cargo" class="form-control"> 
+
+                         <option value="">Todos</option> 
+
+                         <option th:each="cargo : ${cargos}" th:value="${cargo.id_cargo}" th:text="${cargo.nombre_cargo}"></option> 
+
+                     </select> 
+
+                 </div> 
+
+                 <div class="col-md-3 form-group"> 
+
+                     <label for="id_Municipio">Municipio:</label> 
+
+                     <select id="id_Municipio" name="id_Municipio" class="form-control"> 
+
+                         <option value="">Todos</option> 
+
+                         <option th:each="municipio : ${municipios}" th:value="${municipio.id_municipio}" th:text="${municipio.nombre_municipio}"></option> 
+
+                     </select> 
+
+                 </div> 
+
+                 <div class="col-md-3 form-group"> 
+
+                     <label for="estado">Estado:</label> 
+
+                     <select id="estado" name="estado" class="form-control"> 
+
+                         <option value="">Todos</option> 
+
+                         <option value="1">Activo</option> 
+
+                         <option value="0">Inactivo</option> 
+
+                     </select> 
+
+                 </div> 
+
+             </div> 
+
+             <button type="submit" class="btn btn-primary mt-3">Generar Reporte PDF</button> 
+
+         </form> 
+
+     </div> 
+
+
+
+     <div class="table-responsive"> 
+
+         <table class="table table-bordered"> 
+
+             <thead> 
+
+                 <tr> 
+
+                     <th>ID</th> 
+
+                     <th>Nombre Completo</th> 
+
+                     <th>Cargo</th> 
+
+                     <th>Municipio</th> 
+
+                     <th>Fecha de Contratación</th> 
+
+                     <th>Estado</th> 
+
+                     <th>Acciones</th> 
+
+                 </tr> 
+
+             </thead> 
+
+             <tbody> 
+
+                 <tr th:each="empleado : ${empleados.content}"> 
+
+                     <td th:text="${empleado.id_empleado}"></td> 
+
+                     <td th:text="${empleado.nombre} + ' ' + ${empleado.apellido}"></td> 
+
+                     <td th:text="${empleado.cargo?.nombre_cargo}"></td> 
+
+                     <td th:text="${empleado.municipio?.nombre_municipio}"></td> 
+
+                     <td th:text="${empleado.fecha_contratacion}"></td> 
+
+                     <td th:text="${empleado.estado == 1 ? 'Activo' : 'Inactivo'}"></td> 
+
+                     <td> 
+
+                         <a th:href="@{/empleados/view/{id}(id=${empleado.id_empleado})}" class="btn btn-info btn-sm">Ver</a> 
+
+                         <a th:href="@{/empleados/edit/{id}(id=${empleado.id_empleado})}" class="btn btn-warning btn-sm">Editar</a> 
+
+                         <a th:href="@{/empleados/delete/{id}(id=${empleado.id_empleado})}" class="btn btn-danger btn-sm">Eliminar</a> 
+
+                     </td> 
+
+                 </tr> 
+
+                 <tr th:if="${empleados.totalElements == 0}"> 
+
+                     <td colspan="7" class="text-center">No hay empleados registrados.</td> 
+
+                 </tr> 
+
+             </tbody> 
+
+         </table> 
+
+     </div> 
+
+
+
+     <nav th:if="${pageNumbers}"> 
+
+         <ul class="pagination justify-content-center"> 
+
+             <li th:each="pageNum : ${pageNumbers}" class="page-item" 
+
+                 th:classappend="${pageNum == empleados.number + 1} ? 'active'"> 
+
+                 <a class="page-link" 
+
+                    th:href="@{/empleados(page=${pageNum},size=${empleados.size})}" 
+
+                    th:text="${pageNum}"></a> 
+
+             </li> 
+
+         </ul> 
+
+     </nav> 
+
+      
+
+ </section> 
+
+ </body> 
+
+ </html>

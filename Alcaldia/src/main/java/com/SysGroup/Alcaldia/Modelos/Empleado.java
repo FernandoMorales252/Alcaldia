@@ -2,7 +2,6 @@ package com.SysGroup.Alcaldia.Modelos;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
 

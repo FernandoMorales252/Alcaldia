@@ -1,12 +1,157 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/_MainLayout}">
+
 <head>
     <title layout:fragment="title">Listado de Documentos</title>
 </head>
+
 <body>
+
 <section layout:fragment="content">
+      <style>
+    /* ===== Paleta base ===== */
+    :root {
+      --main-dark: #2C3E50 !important;        /* Azul noche */
+      --primary-accent: #2E86C1 !important;   /* Azul serio */
+      --secondary-accent: #E67E22 !important; /* Naranja calabaza */
+      --success: #27AE60 !important;          /* Verde institucional */
+      --danger: #C0392B !important;           /* Rojo formal */
+      --text-light: #ECF0F1 !important;       /* Gris nube */
+      --text-soft: #BDC3C7 !important;        /* Gris plata */
+      --background: #F4F6F9 !important;       /* Fondo gris muy claro */
+      --white: #ffffff !important;
+      --shadow: rgba(0,0,0,0.08) !important;
+    }
+
+    /* ===== General ===== */
+    body {
+      background-color: var(--background) !important;
+      font-family: "Segoe UI", "Roboto", sans-serif !important;
+      color: var(--main-dark) !important;
+      font-size: 15px !important;
+      line-height: 1.5 !important;
+    }
+
+    /* ===== Títulos ===== */
+    h2 {
+      font-size: 2rem !important;
+      color: var(--main-dark) !important;
+      font-weight: 600 !important;
+      padding-bottom: 10px !important;
+      margin-bottom: 20px !important;
+      border-bottom: 3px solid var(--primary-accent) !important;
+    }
+
+    /* ===== Contenedor tabla ===== */
+    .table-container {
+      background-color: var(--white) !important;
+      padding: 20px !important;
+      border-radius: 10px !important;
+      box-shadow: 0 6px 14px var(--shadow) !important;
+      overflow-x: auto !important;
+    }
+
+    /* ===== Tabla ===== */
+    .table {
+      width: 100% !important;
+      border-collapse: collapse !important;
+    }
+
+    .table thead {
+      background-color: var(--main-dark) !important;
+      color: var(--text-light) !important;
+    }
+
+    .table th {
+      font-weight: 600 !important;
+      padding: 14px !important;
+      text-align: left !important;
+      font-size: 0.95rem !important;
+    }
+
+    .table td {
+      padding: 12px 14px !important;
+      vertical-align: middle !important;
+      color: var(--main-dark) !important;
+      font-size: 0.9rem !important;
+      border-top: 1px solid var(--text-soft) !important;
+    }
+
+    /* Alternar filas */
+    .table tbody tr:nth-child(even) {
+      background-color: #f9fbfd !important;
+    }
+
+    .table tbody tr:hover {
+      background-color: #edf3fa !important;
+      transition: all 0.2s ease-in-out !important;
+    }
+
+    /* ===== Botones ===== */
+    .btn {
+      font-weight: 500 !important;
+      border-radius: 6px !important;
+      border: none !important;
+      padding: 7px 14px !important;
+      font-size: 0.9rem !important;
+      transition: all 0.2s ease !important;
+      box-shadow: 0 2px 6px var(--shadow) !important;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px) !important;
+    }
+
+    /* Colores */
+    .btn-success {
+      background-color: var(--success) !important;
+      color: var(--white) !important;
+    }
+    .btn-info {
+      background-color: var(--primary-accent) !important;
+      color: var(--white) !important;
+    }
+    .btn-warning {
+      background-color: var(--secondary-accent) !important;
+      color: var(--white) !important;
+    }
+    .btn-danger {
+      background-color: var(--danger) !important;
+      color: var(--white) !important;
+    }
+    
+    /* MODIFICACIÓN: Contenedor para los botones de acción */
+    .btn-actions {
+      display: flex;
+      gap: 8px; /* Espacio de 8px entre los botones */
+      align-items: center;
+    }
+
+    /* ===== Paginación ===== */
+    .pagination .page-item a {
+      color: var(--main-dark) !important;
+      font-weight: 500 !important;
+      border-radius: 6px !important;
+      margin: 0 3px !important;
+      border: 1px solid #dee2e6 !important;
+    }
+
+    .pagination .page-item a:hover {
+      background-color: var(--text-soft) !important;
+      color: var(--white) !important;
+    }
+
+    .pagination .page-item.active a {
+      background-color: var(--primary-accent) !important;
+      border-color: var(--primary-accent) !important;
+      color: var(--white) !important;
+      font-weight: 600 !important;
+    }
+    </style>
+
     <div th:if="${msg != null}">
         <script>
             swal({
@@ -16,6 +161,7 @@
             });
         </script>
     </div>
+
     <div th:if="${error != null}">
         <script>
             swal({
@@ -32,39 +178,41 @@
         <a th:href="@{/documentos/create}" class="btn btn-success">Nuevo Documento</a>
     </div>
 
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Número de Documento</th>
-            <th>Propietario</th>
-            <th>Detalles</th>
-            <th>Estado</th>
-            <th>Fecha Emisión</th>
-            <th>Municipio</th>
-            <th>Tipo</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-       <tbody>
-<tr th:each="doc : ${documento.content}">
-    <td th:text="${doc.numeroDocumento}">Número de Documento</td>
-    <td th:text="${doc.nombrePersona}">Propietario</td>
-    <td th:text="${doc.detalles}">Detalles</td>
-    <td th:text="${doc.estado == 1 ? 'Activo' : 'Inactivo'}">Estado</td>
-    <td th:text="${#dates.format(doc.fechaEmision, 'dd/MM/yyyy')}">Fecha Emisión</td>
-    <td th:text="${doc.municipio != null ? doc.municipio.nombre_municipio : '-'}">Municipio</td>
-    <td th:text="${doc.tipoDocumento != null ? doc.tipoDocumento.nombre_tipo : '-'}">Tipo</td>
-    <td>
-        <a th:href="@{/documentos/view/{id}(id=${doc.idDocumento})}" class="btn btn-info btn-sm">Ver</a>
-        <a th:href="@{/documentos/edit/{id}(id=${doc.idDocumento})}" class="btn btn-warning btn-sm">Editar</a>
-        <a th:href="@{/documentos/delete/{id}(id=${doc.idDocumento})}" class="btn btn-danger btn-sm">Eliminar</a>
-    </td>
-</tr>
-<tr th:if="${documento.totalElements == 0}">
-    <td colspan="8" class="text-center">No hay documentos registrados.</td>
-</tr>
-</tbody>
-    </table>
+    <div class="table-container">
+        <table class="table table-bordered">
+            <thead>
+            <tr>
+                <th>Número de Documento</th>
+                <th>Propietario</th>
+                <th>Estado</th>
+                <th>Fecha Emisión</th>
+                <th>Municipio</th>
+                <th>Tipo</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="doc : ${documento.content}">
+                <td th:text="${doc.numeroDocumento}">Número de Documento</td>
+                <td th:text="${doc.nombrePersona}">Propietario</td>
+                <td th:text="${doc.estado == 1 ? 'Activo' : 'Inactivo'}">Estado</td>
+                <td th:text="${#dates.format(doc.fechaEmision, 'dd/MM/yyyy')}">Fecha Emisión</td>
+                <td th:text="${doc.municipio != null ? doc.municipio.nombre_municipio : '-'}">Municipio</td>
+                <td th:text="${doc.tipoDocumento != null ? doc.tipoDocumento.nombre_tipo : '-'}">Tipo</td>
+                <td>
+                    <div class="btn-actions">
+                        <a th:href="@{/documentos/view/{id}(id=${doc.idDocumento})}" class="btn btn-info btn-sm">Ver</a>
+                        <a th:href="@{/documentos/edit/{id}(id=${doc.idDocumento})}" class="btn btn-warning btn-sm">Editar</a>
+                        <a th:href="@{/documentos/delete/{id}(id=${doc.idDocumento})}" class="btn btn-danger btn-sm">Eliminar</a>
+                    </div>
+                </td>
+            </tr>
+            <tr th:if="${documento.totalElements == 0}">
+                <td colspan="8" class="text-center">No hay documentos registrados.</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
 
     <nav th:if="${pageNumbers}">
         <ul class="pagination justify-content-center">
@@ -74,7 +222,7 @@
             </li>
         </ul>
     </nav>
-
 </section>
+
 </body>
 </html>

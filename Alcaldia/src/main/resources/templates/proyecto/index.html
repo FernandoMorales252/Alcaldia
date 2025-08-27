@@ -1,96 +1,191 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/_MainLayout}">
-<head>
-    <title layout:fragment="title">Listado de proyectos</title>
-</head>
-<body>
-<section layout:fragment="content">
-    <div th:if="${msg != null }">
-        <script>
-            swal({
-            title:"Confirmación",
-            text: '[[ ${msg} ]]',
-            icon: "success"
-            });
-        </script>
-    </div>
-    <div th:if="${error != null }">
-        <script>
-            swal({
-            title:"Error",
-            text: '[[ ${error} ]]',
-            icon: "error"
-            });
-        </script>
-    </div>
+<!DOCTYPE html> 
 
-    <h2>Listado de proyectos</h2>
+ <html xmlns:th="http://www.thymeleaf.org" 
 
-    <div class="mb-3">
-        <a th:href="@{/proyectos/create}" class="btn btn-success">Nuevo Proyecto</a>
-    </div>
+       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
 
-    <div class="table-responsive">
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre del Proyecto</th>
-                <th>Estado</th>
-                <th>Fecha Inicio</th>
-                <th>Fecha Fin</th>
-                <th>Presupuesto</th>
-                <th>Municipio</th>
-                <th>Acciones</th>
-            </tr>
-            </thead>
-            <tbody>
-                <tr th:each="proyecto : ${proyecto.content}">
-                    <td th:text="${proyecto.id_proyecto}">ID</td>
-                    <!-- CORREGIDO: El nombre del campo en el modelo es 'nombre', no 'nombre_proyecto' -->
-                    <td th:text="${proyecto.nombre}">Nombre</td>
-                    <td>
-                        <!-- CORREGIDO: El estado es un 'int' (0 o 1), no una cadena. Se mapea a "Activo" o "Inactivo". -->
-                        <span class="badge" 
-                              th:classappend="${proyecto.estado == 1 ? 'bg-success' : 'bg-secondary'}"
-                              th:text="${proyecto.estado == 1 ? 'Activo' : 'Inactivo'}">Estado</span>
-                    </td>
-                    <!-- La lógica de fechas es correcta, se deja como está -->
-                    <td th:text="${#dates.format(proyecto.fecha_inicio, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_inicio != null}">Fecha Inicio</td>
-                    <td th:if="${proyecto.fecha_inicio == null}">-</td>
-                    <td th:text="${#dates.format(proyecto.fecha_fin, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_fin != null}">Fecha Fin</td>
-                    <td th:if="${proyecto.fecha_fin == null}">-</td>
-                    <!-- La lógica del presupuesto es correcta, se deja como está -->
-                    <td th:text="${#numbers.formatCurrency(proyecto.presupuesto)}" th:if="${proyecto.presupuesto != null}">Presupuesto</td>
-                    <td th:if="${proyecto.presupuesto == null}">-</td>
-                    <!-- CORREGIDO: Se accede a la propiedad 'nombre_municipio' del objeto 'id_municipio' -->
-                    <td th:text="${proyecto.id_municipio != null ? proyecto.id_municipio.nombre_municipio : '-'}">Municipio</td>
-                    <td>
-                        <a th:href="@{/proyectos/view/{id}(id=${proyecto.id_proyecto})}" class="btn btn-info btn-sm">Ver</a>
-                        <a th:href="@{/proyectos/edit/{id}(id=${proyecto.id_proyecto})}" class="btn btn-warning btn-sm">Editar</a>
-                        <a th:href="@{/proyectos/delete/{id}(id=${proyecto.id_proyecto})}" class="btn btn-danger btn-sm">Eliminar</a>
-                    </td>
-                </tr>
-                <tr th:if="${proyecto.totalElements == 0}">
-                    <td colspan="8" class="text-center">No hay proyectos registrados.</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+       layout:decorate="~{layouts/_MainLayout}"> 
 
-    <nav th:if="${pageNumbers}">
-        <ul class="pagination justify-content-center">
-            <li th:each="pageNum : ${pageNumbers}" class="page-item"
-                th:classappend="${pageNum == proyecto.number + 1} ? 'active'">
-                <a class="page-link"
-                   th:href="@{/proyectos(page=${pageNum},size=${proyecto.size})}"
-                   th:text="${pageNum}"></a>
-            </li>
-        </ul>
-    </nav>
+ <head> 
 
-</section>
-</body>
-</html>
+     <title layout:fragment="title">Listado de proyectos</title> 
+
+ </head> 
+
+ <body> 
+
+ <section layout:fragment="content"> 
+
+     <div th:if="${msg != null }"> 
+
+         <script> 
+
+             swal({ 
+
+             title:"Confirmación", 
+
+             text: '[[ ${msg} ]]', 
+
+             icon: "success" 
+
+             }); 
+
+         </script> 
+
+     </div> 
+
+     <div th:if="${error != null }"> 
+
+         <script> 
+
+             swal({ 
+
+             title:"Error", 
+
+             text: '[[ ${error} ]]', 
+
+             icon: "error" 
+
+             }); 
+
+         </script> 
+
+     </div> 
+
+
+
+     <h2>Listado de proyectos</h2> 
+
+
+
+     <div class="mb-3"> 
+
+         <a th:href="@{/proyectos/create}" class="btn btn-success">Nuevo Proyecto</a> 
+
+     </div> 
+
+
+
+     <div class="table-responsive"> 
+
+         <table class="table table-bordered"> 
+
+             <thead> 
+
+             <tr> 
+
+                 <th>ID</th> 
+
+                 <th>Nombre del Proyecto</th> 
+
+                 <th>Estado</th> 
+
+                 <th>Fecha Inicio</th> 
+
+                 <th>Fecha Fin</th> 
+
+                 <th>Presupuesto</th> 
+
+                 <th>Municipio</th> 
+
+                 <th>Acciones</th> 
+
+             </tr> 
+
+             </thead> 
+
+             <tbody> 
+
+                 <tr th:each="proyecto : ${proyecto.content}"> 
+
+                     <td th:text="${proyecto.id_proyecto}">ID</td> 
+
+                     <!-- CORREGIDO: El nombre del campo en el modelo es 'nombre', no 'nombre_proyecto' --> 
+
+                     <td th:text="${proyecto.nombre}">Nombre</td> 
+
+                     <td> 
+
+                         <!-- CORREGIDO: El estado es un 'int' (0 o 1), no una cadena. Se mapea a "Activo" o "Inactivo". --> 
+
+                         <span class="badge"  
+
+                               th:classappend="${proyecto.estado == 1 ? 'bg-success' : 'bg-secondary'}" 
+
+                               th:text="${proyecto.estado == 1 ? 'Activo' : 'Inactivo'}">Estado</span> 
+
+                     </td> 
+
+                     <!-- La lógica de fechas es correcta, se deja como está --> 
+
+                     <td th:text="${#dates.format(proyecto.fecha_inicio, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_inicio != null}">Fecha Inicio</td> 
+
+                     <td th:if="${proyecto.fecha_inicio == null}">-</td> 
+
+                     <td th:text="${#dates.format(proyecto.fecha_fin, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_fin != null}">Fecha Fin</td> 
+
+                     <td th:if="${proyecto.fecha_fin == null}">-</td> 
+
+                     <!-- La lógica del presupuesto es correcta, se deja como está --> 
+
+                     <td th:text="${#numbers.formatCurrency(proyecto.presupuesto)}" th:if="${proyecto.presupuesto != null}">Presupuesto</td> 
+
+                     <td th:if="${proyecto.presupuesto == null}">-</td> 
+
+                     <!-- CORREGIDO: Se accede a la propiedad 'nombre_municipio' del objeto 'id_municipio' --> 
+
+                     <td th:text="${proyecto.id_municipio != null ? proyecto.id_municipio.nombre_municipio : '-'}">Municipio</td> 
+
+                     <td> 
+
+                         <a th:href="@{/proyectos/view/{id}(id=${proyecto.id_proyecto})}" class="btn btn-info btn-sm">Ver</a> 
+
+                         <a th:href="@{/proyectos/edit/{id}(id=${proyecto.id_proyecto})}" class="btn btn-warning btn-sm">Editar</a> 
+
+                         <a th:href="@{/proyectos/delete/{id}(id=${proyecto.id_proyecto})}" class="btn btn-danger btn-sm">Eliminar</a> 
+
+                     </td> 
+
+                 </tr> 
+
+                 <tr th:if="${proyecto.totalElements == 0}"> 
+
+                     <td colspan="8" class="text-center">No hay proyectos registrados.</td> 
+
+                 </tr> 
+
+             </tbody> 
+
+         </table> 
+
+     </div> 
+
+
+
+     <nav th:if="${pageNumbers}"> 
+
+         <ul class="pagination justify-content-center"> 
+
+             <li th:each="pageNum : ${pageNumbers}" class="page-item" 
+
+                 th:classappend="${pageNum == proyecto.number + 1} ? 'active'"> 
+
+                 <a class="page-link" 
+
+                    th:href="@{/proyectos(page=${pageNum},size=${proyecto.size})}" 
+
+                    th:text="${pageNum}"></a> 
+
+             </li> 
+
+         </ul> 
+
+     </nav> 
+
+
+
+ </section> 
+
+ </body> 
+
+ </html>

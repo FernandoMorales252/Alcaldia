@@ -1,108 +1,569 @@
 <!DOCTYPE html>
+
 <html xmlns:th="http://www.thymeleaf.org"
+
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+
       layout:decorate="~{layouts/_MainLayout}">
+
 <head>
+
     <title layout:fragment="title" th:text="'Empleado - ' + ${action}">Empleado</title>
+
+    <style>
+
+        /* ===== Paleta base ===== */
+
+        :root {
+
+            --main-dark: #2C3E50 !important;
+
+            --primary-accent: #2E86C1 !important;
+
+            --secondary-accent: #E67E22 !important;
+
+            --success: #27AE60 !important;
+
+            --danger: #C0392B !important;
+
+            --text-light: #ECF0F1 !important;
+
+            --text-soft: #BDC3C7 !important;
+
+            --background: #F4F6F9 !important;
+
+            --white: #ffffff !important;
+
+            --shadow: rgba(0,0,0,0.08) !important;
+
+        }
+
+ 
+
+        /* ===== General ===== */
+
+        body {
+
+            background-color: var(--background) !important;
+
+            font-family: "Segoe UI", "Roboto", sans-serif !important;
+
+            color: var(--main-dark) !important;
+
+            font-size: 15px !important;
+
+            line-height: 1.5 !important;
+
+        }
+
+ 
+
+        /* ===== Títulos ===== */
+
+        h2 {
+
+            font-size: 2rem !important;
+
+            color: var(--main-dark) !important;
+
+            font-weight: 600 !important;
+
+            padding-bottom: 10px !important;
+
+            margin-bottom: 20px !important;
+
+            border-bottom: 3px solid var(--primary-accent) !important;
+
+        }
+
+ 
+
+        /* ===== Contenedor tabla y de formulario ===== */
+
+        .table-container,
+
+        .form-container {
+
+            background-color: var(--white) !important;
+
+            padding: 20px !important;
+
+            border-radius: 10px !important;
+
+            box-shadow: 0 6px 14px var(--shadow) !important;
+
+            overflow-x: auto !important;
+
+        }
+
+
+
+        /* ===== Formulario ===== */
+
+        form {
+
+            background-color: var(--white) !important;
+
+            padding: 25px !important;
+
+            border-radius: 10px !important;
+
+            box-shadow: 0 6px 14px var(--shadow) !important;
+
+            max-width: 700px !important;
+
+            margin: 0 auto 30px auto !important;
+
+        }
+
+ 
+
+        label {
+
+            font-weight: 600 !important;
+
+            color: var(--main-dark) !important;
+
+            margin-bottom: 5px !important;
+
+            display: block !important;
+
+        }
+
+ 
+
+        input.form-control, textarea.form-control, select.form-select {
+
+            border: 1px solid var(--text-soft) !important;
+
+            border-radius: 6px !important;
+
+            padding: 8px 12px !important;
+
+            width: 100% !important;
+
+            background-color: var(--white) !important;
+
+            color: var(--main-dark) !important;
+
+            font-size: 0.95rem !important;
+
+            transition: all 0.2s ease !important;
+
+        }
+
+ 
+
+        input.form-control:focus, textarea.form-control:focus, select.form-select:focus {
+
+            border-color: var(--primary-accent) !important;
+
+            box-shadow: 0 0 5px rgba(46, 134, 193, 0.3) !important;
+
+            outline: none !important;
+
+        }
+
+ 
+
+        .text-danger {
+
+            font-size: 0.85rem !important;
+
+            margin-top: 3px !important;
+
+            color: var(--danger) !important;
+
+        }
+
+ 
+
+        /* ===== Botones ===== */
+
+        .btn {
+
+            font-weight: 500 !important;
+
+            border-radius: 6px !important;
+
+            border: none !important;
+
+            padding: 8px 16px !important;
+
+            font-size: 0.95rem !important;
+
+            transition: all 0.2s ease !important;
+
+            box-shadow: 0 2px 6px var(--shadow) !important;
+
+            margin-right: 5px !important;
+
+        }
+
+ 
+
+        .btn:hover {
+
+            transform: translateY(-2px) !important;
+
+        }
+
+ 
+
+        .btn-primary {
+
+            background-color: var(--primary-accent) !important;
+
+            color: var(--white) !important;
+
+        }
+
+ 
+
+        .btn-success {
+
+            background-color: var(--success) !important;
+
+            color: var(--white) !important;
+
+        }
+
+ 
+
+        .btn-danger {
+
+            background-color: var(--danger) !important;
+
+            color: var(--white) !important;
+
+        }
+
+ 
+
+        .btn-secondary {
+
+            background-color: var(--text-soft) !important;
+
+            color: var(--main-dark) !important;
+
+        }
+
+ 
+
+        .btn-secondary:hover {
+
+            background-color: var(--primary-accent) !important;
+
+            color: var(--white) !important;
+
+        }
+
+ 
+
+        /* ===== Mensajes ===== */
+
+        .alert {
+
+            border-radius: 6px !important;
+
+            padding: 12px 20px !important;
+
+            font-size: 0.95rem !important;
+
+            max-width: 700px !important;
+
+            margin: 15px auto !important;
+
+            box-shadow: 0 4px 10px var(--shadow) !important;
+
+        }
+
+ 
+
+        /* Estilo para el modal de SweetAlert */
+
+        .swal-overlay {
+
+            background-color: rgba(0, 0, 0, 0.45) !important;
+
+        }
+
+ 
+
+        .swal-modal {
+
+            background-color: var(--white) !important;
+
+            border-radius: 10px !important;
+
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+
+        }
+
+ 
+
+        .swal-title {
+
+            color: var(--main-dark) !important;
+
+            font-size: 1.5rem !important;
+
+            font-weight: 600 !important;
+
+        }
+
+ 
+
+        .swal-text {
+
+            color: var(--main-dark) !important;
+
+            font-size: 1rem !important;
+
+            text-align: center !important;
+
+        }
+
+ 
+
+        .swal-footer {
+
+            text-align: center !important;
+
+        }
+
+ 
+
+        .swal-button {
+
+            background-color: var(--primary-accent) !important;
+
+            color: var(--white) !important;
+
+            border: none !important;
+
+            border-radius: 6px !important;
+
+            padding: 8px 16px !important;
+
+            transition: all 0.2s ease !important;
+
+        }
+
+ 
+
+        .swal-button:not([disabled]):hover {
+
+            background-color: #246a9a !important;
+
+            transform: translateY(-2px) !important;
+
+        }
+
+
+
+        /* Estilos para badges de estado */
+
+        .badge {
+
+            display: inline-block !important;
+
+            padding: 0.35em 0.65em !important;
+
+            font-size: 0.75em !important;
+
+            font-weight: 700 !important;
+
+            line-height: 1 !important;
+
+            color: #fff !important;
+
+            text-align: center !important;
+
+            white-space: nowrap !important;
+
+            vertical-align: baseline !important;
+
+            border-radius: 0.25rem !important;
+
+        }
+
+        .bg-success {
+
+            background-color: var(--success) !important;
+
+        }
+
+        .bg-secondary {
+
+            background-color: var(--text-soft) !important;
+
+        }
+
+
+
+    </style>
+
 </head>
+
 <body>
+
 <section layout:fragment="content">
+
     <h2 th:text="${action == 'create' ? 'Crear Nuevo Empleado' :
+
                     action == 'edit' ? 'Editar Empleado' :
+
                     action == 'view' ? 'Ver Empleado' :
+
                     action == 'delete' ? 'Eliminar Empleado' : 'Empleado'}"></h2>
 
+ 
+
     <form th:action="@{${action == 'create' ? '/empleados/create' :
+
                       action == 'edit' ? '/empleados/edit' :
+
                       action == 'delete' ? '/empleados/delete' : '#'}}"
+
           th:object="${empleado}" method="post" id="proyectoForm">
+
+ 
 
         <input type="hidden" th:if="${empleado.id_empleado != null}" th:field="*{id_empleado}" />
 
+ 
+
         <div class="mb-3">
+
             <label for="nombre" class="form-label">Nombre</label>
+
             <input type="text" th:field="*{nombre}" id="nombre" class="form-control"
+
                    th:attr="readonly=${action=='view' or action=='delete'}" required/>
+
             <div class="text-danger" th:if="${#fields.hasErrors('nombre')}" th:errors="*{nombre}"></div>
+
         </div>
 
+ 
+
         <div class="mb-3">
+
             <label for="apellido" class="form-label">Apellido</label>
+
             <input type="text" th:field="*{apellido}" id="apellido" class="form-control"
+
                    th:attr="readonly=${action=='view' or action=='delete'}" required/>
+
             <div class="text-danger" th:if="${#fields.hasErrors('apellido')}" th:errors="*{apellido}"></div>
+
         </div>
 
+ 
+
         <div class="mb-3">
+
             <label for="fecha_contratacion" class="form-label">Fecha de Contratación</label>
+
             <input type="date" th:field="*{fecha_contratacion}" id="fecha_contratacion" class="form-control"
+
                    th:attr="readonly=${action=='view' or action=='delete'}" required/>
+
             <div class="text-danger" th:if="${#fields.hasErrors('fecha_contratacion')}" th:errors="*{fecha_contratacion}"></div>
+
         </div>
-        
+
+       
+
         <div class="mb-3">
+
             <label for="estado" class="form-label">Estado</label>
+
             <select th:field="*{estado}" id="estado" class="form-select"
+
                     th:disabled="${action == 'view' || action == 'delete'}" required>
+
                 <option value="0">Inactivo</option>
+
                 <option value="1">Activo</option>
+
             </select>
+
             <div class="text-danger" th:if="${#fields.hasErrors('estado')}" th:errors="*{estado}"></div>
+
         </div>
 
+ 
+
         <div class="mb-3">
+
             <label for="cargo" class="form-label">Cargo</label>
+
             <select th:field="*{cargo}" id="cargo" class="form-select"
+
                     th:disabled="${action == 'view' || action == 'delete'}" required>
+
                 <option value="">-- Seleccione un Cargo --</option>
+
                 <option th:each="c : ${cargos}" th:value="${c.id_cargo}" th:text="${c.nombre_cargo}"></option>
+
             </select>
+
             <div class="text-danger" th:if="${#fields.hasErrors('cargo')}" th:errors="*{cargo}"></div>
+
         </div>
 
+ 
+
         <div class="mb-3">
+
             <label for="municipio" class="form-label">Municipio</label>
+
             <select th:field="*{municipio}" id="municipio" class="form-select"
+
                     th:disabled="${action == 'view' || action == 'delete'}" required>
+
                 <option value="">-- Seleccione un Municipio --</option>
+
                 <option th:each="m : ${municipios}" th:value="${m.id_municipio}" th:text="${m.nombre_municipio}"></option>
+
             </select>
+
             <div class="text-danger" th:if="${#fields.hasErrors('municipio')}" th:errors="*{municipio}"></div>
+
         </div>
+
+ 
 
         <div th:if="${action != 'view'}" class="mb-3">
+
             <button type="submit"
+
                     th:text="${action == 'delete' ? 'Confirmar Eliminación' : 'Guardar'}"
+
                     class="btn"
+
                     th:classappend="${action == 'delete' ? 'btn-danger' : 'btn-primary'}"></button>
+
             <a th:href="@{/empleados}" class="btn btn-secondary">Cancelar</a>
+
         </div>
+
+ 
 
         <div th:if="${action == 'view'}" class="mb-3">
+
             <a th:href="@{/empleados}" class="btn btn-secondary">Regresar</a>
+
         </div>
 
-    </form>
-</section>
-<script>
-   
-    document.addEventListener('DOMContentLoaded', function() {
-       // Valida el formulario antes de enviarlo
-        form.addEventListener('submit', function(event) {
-            const requiredFields = document.querySelectorAll('#proyectoForm [required]');
-            let allFilled = true;
-            requiredFields.forEach(field => {
-                if (!field.value) {
-                    allFilled = false;
-                }
-            });
+ 
 
-            if (!allFilled) {
-                event.preventDefault(); // Evita el envío del formulario
-                alert('No se puede guardar. Por favor, completa todos los campos obligatorios.');
-            }
-        });
-    });
-</script>
+    </form>
+
+</section>
+
 </body>
+
 </html>

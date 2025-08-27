@@ -4,18 +4,170 @@
       layout:decorate="~{layouts/_MainLayout}">
 <head>
     <title layout:fragment="title" th:text="'Cargo - ' + ${action}">Cargo</title>
+    <style layout:fragment="styles">
+        /* ===== Paleta base ===== */
+        :root {
+            --main-dark: #2C3E50 !important;
+            --primary-accent: #2E86C1 !important;
+            --secondary-accent: #E67E22 !important;
+            --success: #27AE60 !important;
+            --danger: #C0392B !important;
+            --text-light: #ECF0F1 !important;
+            --text-soft: #BDC3C7 !important;
+            --background: #F4F6F9 !important;
+            --white: #ffffff !important;
+            --shadow: rgba(0,0,0,0.08) !important;
+        }
+
+        /* ===== General ===== */
+        body {
+            background-color: var(--background) !important;
+            font-family: "Segoe UI", "Roboto", sans-serif !important;
+            color: var(--main-dark) !important;
+            font-size: 15px !important;
+            line-height: 1.5 !important;
+        }
+
+        h2 {
+            font-size: 2rem !important;
+            color: var(--main-dark) !important;
+            font-weight: 600 !important;
+            padding-bottom: 10px !important;
+            margin-bottom: 20px !important;
+            border-bottom: 3px solid var(--primary-accent) !important;
+        }
+
+        /* ===== Formulario ===== */
+        form {
+            background-color: var(--white) !important;
+            padding: 25px !important;
+            border-radius: 10px !important;
+            box-shadow: 0 6px 14px var(--shadow) !important;
+            max-width: 700px !important;
+            margin: 0 auto 30px auto !important;
+        }
+
+        label {
+            font-weight: 600 !important;
+            color: var(--main-dark) !important;
+            margin-bottom: 5px !important;
+            display: block !important;
+        }
+
+        .form-control, .form-select, .form-label {
+            border: 1px solid var(--text-soft) !important;
+            border-radius: 6px !important;
+            padding: 8px 12px !important;
+            width: 100% !important;
+            background-color: var(--white) !important;
+            color: var(--main-dark) !important;
+            font-size: 0.95rem !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--primary-accent) !important;
+            box-shadow: 0 0 5px rgba(46, 134, 193, 0.3) !important;
+            outline: none !important;
+        }
+
+        .text-danger {
+            font-size: 0.85rem !important;
+            margin-top: 3px !important;
+            color: var(--danger) !important;
+        }
+
+        /* ===== Botones ===== */
+        .btn {
+            font-weight: 500 !important;
+            border-radius: 6px !important;
+            border: none !important;
+            padding: 8px 16px !important;
+            font-size: 0.95rem !important;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 2px 6px var(--shadow) !important;
+            margin-right: 5px !important;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px) !important;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-accent) !important;
+            color: var(--white) !important;
+        }
+
+        .btn-success {
+            background-color: var(--success) !important;
+            color: var(--white) !important;
+        }
+
+        .btn-danger {
+            background-color: var(--danger) !important;
+            color: var(--white) !important;
+        }
+
+        .btn-secondary {
+            background-color: var(--text-soft) !important;
+            color: var(--main-dark) !important;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--primary-accent) !important;
+            color: var(--white) !important;
+        }
+
+        /* ===== Mensajes ===== */
+        .alert {
+            border-radius: 6px !important;
+            padding: 12px 20px !important;
+            font-size: 0.95rem !important;
+            max-width: 700px !important;
+            margin: 15px auto !important;
+            box-shadow: 0 4px 10px var(--shadow) !important;
+        }
+
+        /* Flexbox utilities para el responsive */
+        .row {
+            display: flex !important;
+            flex-wrap: wrap !important;
+            margin-right: -15px !important;
+            margin-left: -15px !important;
+        }
+
+        .col-md-6 {
+            flex: 0 0 50% !important;
+            max-width: 50% !important;
+            position: relative !important;
+            width: 100% !important;
+            padding-right: 15px !important;
+            padding-left: 15px !important;
+        }
+
+        .mb-3 {
+            margin-bottom: 1rem !important;
+        }
+
+        @media (max-width: 768px) {
+            .col-md-6 {
+                flex: 0 0 100% !important;
+                max-width: 100% !important;
+            }
+        }
+    </style>
 </head>
 <body>
-<section layout:fragment="content">
+<section layout:fragment="content" class="container mx-auto mt-5">
     <h2 th:text="${action == 'create' ? 'Crear nuevo cargo' :
-                  action == 'edit' ? 'Editar cargo' :
-                  action == 'view' ? 'Ver cargo' :
-                  action == 'delete' ? 'Eliminar cargo' : 'Cargo'}"></h2>
+                     action == 'edit' ? 'Editar cargo' :
+                     action == 'view' ? 'Ver cargo' :
+                     action == 'delete' ? 'Eliminar cargo' : 'Cargo'}"></h2>
 
     <form th:action="@{${action == 'create' ? '/cargo/create' :
-                      action == 'edit' ? '/cargo/edit' :
-                      action == 'delete' ? '/cargo/delete' : '#'}}"
-          th:object="${cargo}" method="post" id="proyectoForm">
+                           action == 'edit' ? '/cargo/edit' :
+                           action == 'delete' ? '/cargo/delete' : '#'}}"
+          th:object="${cargo}" method="post" id="cargoForm">
 
         <input type="hidden" th:if="${cargo.id_cargo != null}" th:field="*{id_cargo}" />
 
@@ -29,7 +181,7 @@
             <label for="descripcion" class="form-label">Descripción</label>
             <input type="text" th:field="*{descripcion}" id="descripcion" class="form-control"
                    th:attr="readonly=${action=='view' or action=='delete'}" required />
-            <div class="text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div> <!-- CORRECCIÓN: Paréntesis cerrando en 'descripcion' -->
+            <div class="text-danger" th:if="${#fields.hasErrors('descripcion')}" th:errors="*{descripcion}"></div>
         </div>
 
         <div th:if="${action != 'view'}" class="mb-3">
@@ -47,59 +199,13 @@
     </form>
 </section>
 
-<script>
-   
+<script layout:fragment="script">
     document.addEventListener('DOMContentLoaded', function() {
-       // Valida el formulario antes de enviarlo
-        form.addEventListener('submit', function(event) {
-            const requiredFields = document.querySelectorAll('#proyectoForm [required]');
-            let allFilled = true;
-            requiredFields.forEach(field => {
-                if (!field.value) {
-                    allFilled = false;
-                }
-            });
-
-            if (!allFilled) {
-                event.preventDefault(); // Evita el envío del formulario
-                alert('No se puede guardar. Por favor, completa todos los campos obligatorios.');
-            }
-        });
-    });
-</script>
-
-
-        urlInput.addEventListener('input', function() {
-            const url = this.value.trim();
-            if (url) {
-                // Muestra el contenedor de vista previa y asigna la URL
-                previewContainer.style.display = 'block';
-                previewImage.src = url;
-            } else {
-                // Oculta el contenedor si no hay URL
-                previewContainer.style.display = 'none';
-                previewImage.src = '';
-            }
-        });
+        const form = document.getElementById('cargoForm');
         
-        // Carga la imagen de vista previa inicial si ya existe una URL
-        if (urlInput.value) {
-            const currentImageContainer = document.getElementById('currentImageContainer');
-            if(currentImageContainer) {
-                currentImageContainer.style.display = 'block';
-                const currentImage = currentImageContainer.querySelector('img');
-                if (currentImage) {
-                    currentImage.src = urlInput.value;
-                }
-            } else {
-                 previewContainer.style.display = 'block';
-                 previewImage.src = urlInput.value;
-            }
-        }
-
         // Valida el formulario antes de enviarlo
         form.addEventListener('submit', function(event) {
-            const requiredFields = document.querySelectorAll('#proyectoForm [required]');
+            const requiredFields = document.querySelectorAll('#cargoForm [required]');
             let allFilled = true;
             requiredFields.forEach(field => {
                 if (!field.value) {
@@ -109,6 +215,7 @@
 
             if (!allFilled) {
                 event.preventDefault(); // Evita el envío del formulario
+                // Reemplazar este alert con una UI más amigable si es necesario.
                 alert('No se puede guardar. Por favor, completa todos los campos obligatorios.');
             }
         });

@@ -1,82 +1,163 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="~{layouts/_MainLayout}">
-<head>
-    <title layout:fragment="title">Listado de cargos</title>
-</head>
-<body>
-<section layout:fragment="content">
-    <div th:if="${msg != null }">
-        <script>
-            swal({
-            title:"Confirmación",
-            text: '[[ ${msg} ]]',
-            icon: "success"
-            });
-        </script>
-    </div>
-    <div th:if="${error != null }">
-        <script>
-            swal({
-            title:"Error",
-            text: '[[ ${error} ]]',
-            icon: "error"
-            });
-        </script>
-    </div>
+<!DOCTYPE html> 
 
-    <h2>Listado de cargos</h2>
+ <html xmlns:th="http://www.thymeleaf.org" 
 
-    <div class="mb-3">
-        <a th:href="@{/cargo/create}" class="btn btn-success">Nuevo Cargo</a>
-    </div>
+       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
 
-  <!-- Muestra el mensaje de éxito si existe -->
-  <div th:if="${msg}" class="alert alert-success">
-    <span th:text="${msg}"></span>
-  </div>
+       layout:decorate="~{layouts/_MainLayout}"> 
 
- <!-- Muestra el mensaje de error si existe -->
- <div th:if="${error}" class="alert alert-danger">
-    <span th:text="${error}"></span>
- </div>
- 
-    <table class="table table-bordered">
-        <thead>
-        <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Acciones</th>
-        </tr>
-        </thead>
-        <tbody>
-            <tr th:each="cargo : ${cargos.content}">
-                <td th:text="${cargo.nombre_cargo}">Nombre</td>
-                <td th:text="${cargo.descripcion}">Descripción</td>
-                <td>
-                    <a th:href="@{/cargo/view/{id}(id=${cargo.id_cargo})}" class="btn btn-info btn-sm">Ver</a>
-                    <a th:href="@{/cargo/edit/{id}(id=${cargo.id_cargo})}" class="btn btn-warning btn-sm">Editar</a>
-                    <a th:href="@{/cargo/delete/{id}(id=${cargo.id_cargo})}" class="btn btn-danger btn-sm">Eliminar</a>
-                </td>
-            </tr>
-            <tr th:if="${cargos.totalElements == 0}">
-                <td colspan="6" class="text-center">No hay cargos registrados.</td>
-            </tr>
-        </tbody>
-    </table>
+ <head> 
 
-    <nav th:if="${pageNumbers}">
-        <ul class="pagination justify-content-center">
-            <li th:each="pageNum : ${pageNumbers}" class="page-item"
-                th:classappend="${pageNum == cargos.number + 1} ? 'active'">
-                <a class="page-link"
-                   th:href="@{/cargo(page=${pageNum},size=${cargos.size})}"
-                   th:text="${pageNum}"></a>
-            </li>
-        </ul>
-    </nav>
+     <title layout:fragment="title">Listado de cargos</title> 
 
-</section>
-</body>
-</html>
+ </head> 
+
+ <body> 
+
+ <section layout:fragment="content"> 
+
+     <div th:if="${msg != null }"> 
+
+         <script> 
+
+             swal({ 
+
+             title:"Confirmación", 
+
+             text: '[[ ${msg} ]]', 
+
+             icon: "success" 
+
+             }); 
+
+         </script> 
+
+     </div> 
+
+     <div th:if="${error != null }"> 
+
+         <script> 
+
+             swal({ 
+
+             title:"Error", 
+
+             text: '[[ ${error} ]]', 
+
+             icon: "error" 
+
+             }); 
+
+         </script> 
+
+     </div> 
+
+
+
+     <h2>Listado de cargos</h2> 
+
+
+
+     <div class="mb-3"> 
+
+         <a th:href="@{/cargo/create}" class="btn btn-success">Nuevo Cargo</a> 
+
+     </div> 
+
+
+
+   <!-- Muestra el mensaje de éxito si existe --> 
+
+   <div th:if="${msg}" class="alert alert-success"> 
+
+     <span th:text="${msg}"></span> 
+
+   </div> 
+
+
+
+  <!-- Muestra el mensaje de error si existe --> 
+
+  <div th:if="${error}" class="alert alert-danger"> 
+
+     <span th:text="${error}"></span> 
+
+  </div> 
+
+   
+
+     <table class="table table-bordered"> 
+
+         <thead> 
+
+         <tr> 
+
+             <th>Nombre</th> 
+
+             <th>Descripción</th> 
+
+             <th>Acciones</th> 
+
+         </tr> 
+
+         </thead> 
+
+         <tbody> 
+
+             <tr th:each="cargo : ${cargos.content}"> 
+
+                 <td th:text="${cargo.nombre_cargo}">Nombre</td> 
+
+                 <td th:text="${cargo.descripcion}">Descripción</td> 
+
+                 <td> 
+
+                     <a th:href="@{/cargo/view/{id}(id=${cargo.id_cargo})}" class="btn btn-info btn-sm">Ver</a> 
+
+                     <a th:href="@{/cargo/edit/{id}(id=${cargo.id_cargo})}" class="btn btn-warning btn-sm">Editar</a> 
+
+                     <a th:href="@{/cargo/delete/{id}(id=${cargo.id_cargo})}" class="btn btn-danger btn-sm">Eliminar</a> 
+
+                 </td> 
+
+             </tr> 
+
+             <tr th:if="${cargos.totalElements == 0}"> 
+
+                 <td colspan="6" class="text-center">No hay cargos registrados.</td> 
+
+             </tr> 
+
+         </tbody> 
+
+     </table> 
+
+
+
+     <nav th:if="${pageNumbers}"> 
+
+         <ul class="pagination justify-content-center"> 
+
+             <li th:each="pageNum : ${pageNumbers}" class="page-item" 
+
+                 th:classappend="${pageNum == cargos.number + 1} ? 'active'"> 
+
+                 <a class="page-link" 
+
+                    th:href="@{/cargo(page=${pageNum},size=${cargos.size})}" 
+
+                    th:text="${pageNum}"></a> 
+
+             </li> 
+
+         </ul> 
+
+     </nav> 
+
+
+
+ </section> 
+
+ </body> 
+
+ </html>

@@ -241,7 +241,7 @@
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>ID</th>
+                    
                     <th>Nombre Completo</th>
                     <th>Cargo</th>
                     <th>Municipio</th>
@@ -252,7 +252,6 @@
             </thead>
             <tbody>
                 <tr th:each="empleado : ${empleados.content}">
-                    <td th:text="${empleado.id_empleado}"></td>
                     <td th:text="${empleado.nombre} + ' ' + ${empleado.apellido}"></td>
                     <td th:text="${empleado.cargo?.nombre_cargo}"></td>
                     <td th:text="${empleado.municipio?.nombre_municipio}"></td>

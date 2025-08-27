@@ -1,191 +1,503 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 
- <html xmlns:th="http://www.thymeleaf.org" 
+<html xmlns:th="http://www.thymeleaf.org"
 
-       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 
-       layout:decorate="~{layouts/_MainLayout}"> 
+      layout:decorate="~{layouts/_MainLayout}">
 
- <head> 
+<head>
 
-     <title layout:fragment="title">Listado de proyectos</title> 
+    <title layout:fragment="title">Listado de proyectos</title>
 
- </head> 
+    <style>
 
- <body> 
+        /* ===== Paleta base ===== */
 
- <section layout:fragment="content"> 
+        :root {
 
-     <div th:if="${msg != null }"> 
+            --main-dark: #2C3E50 !important;
 
-         <script> 
+            --primary-accent: #2E86C1 !important;
 
-             swal({ 
+            --secondary-accent: #E67E22 !important;
 
-             title:"Confirmación", 
+            --success: #27AE60 !important;
 
-             text: '[[ ${msg} ]]', 
+            --danger: #C0392B !important;
 
-             icon: "success" 
+            --text-light: #ECF0F1 !important;
 
-             }); 
+            --text-soft: #BDC3C7 !important;
 
-         </script> 
+            --background: #F4F6F9 !important;
 
-     </div> 
+            --white: #ffffff !important;
 
-     <div th:if="${error != null }"> 
+            --shadow: rgba(0,0,0,0.08) !important;
 
-         <script> 
+        }
 
-             swal({ 
 
-             title:"Error", 
 
-             text: '[[ ${error} ]]', 
+        /* ===== General ===== */
 
-             icon: "error" 
+        body {
 
-             }); 
+            background-color: var(--background) !important;
 
-         </script> 
+            font-family: "Segoe UI", "Roboto", sans-serif !important;
 
-     </div> 
+            color: var(--main-dark) !important;
 
+            font-size: 15px !important;
 
+            line-height: 1.5 !important;
 
-     <h2>Listado de proyectos</h2> 
+        }
 
 
 
-     <div class="mb-3"> 
+        /* ===== Títulos ===== */
 
-         <a th:href="@{/proyectos/create}" class="btn btn-success">Nuevo Proyecto</a> 
+        h2 {
 
-     </div> 
+            font-size: 2rem !important;
 
+            color: var(--main-dark) !important;
 
+            font-weight: 600 !important;
 
-     <div class="table-responsive"> 
+            padding-bottom: 10px !important;
 
-         <table class="table table-bordered"> 
+            margin-bottom: 20px !important;
 
-             <thead> 
+            border-bottom: 3px solid var(--primary-accent) !important;
 
-             <tr> 
+        }
 
-                 <th>ID</th> 
 
-                 <th>Nombre del Proyecto</th> 
 
-                 <th>Estado</th> 
+        /* ===== Contenedor tabla ===== */
 
-                 <th>Fecha Inicio</th> 
+        .table-container {
 
-                 <th>Fecha Fin</th> 
+            background-color: var(--white) !important;
 
-                 <th>Presupuesto</th> 
+            padding: 20px !important;
 
-                 <th>Municipio</th> 
+            border-radius: 10px !important;
 
-                 <th>Acciones</th> 
+            box-shadow: 0 6px 14px var(--shadow) !important;
 
-             </tr> 
+            overflow-x: auto !important;
 
-             </thead> 
+        }
 
-             <tbody> 
 
-                 <tr th:each="proyecto : ${proyecto.content}"> 
 
-                     <td th:text="${proyecto.id_proyecto}">ID</td> 
+        /* ===== Tabla ===== */
 
-                     <!-- CORREGIDO: El nombre del campo en el modelo es 'nombre', no 'nombre_proyecto' --> 
+        .table {
 
-                     <td th:text="${proyecto.nombre}">Nombre</td> 
+            width: 100% !important;
 
-                     <td> 
+            border-collapse: collapse !important;
 
-                         <!-- CORREGIDO: El estado es un 'int' (0 o 1), no una cadena. Se mapea a "Activo" o "Inactivo". --> 
+        }
 
-                         <span class="badge"  
 
-                               th:classappend="${proyecto.estado == 1 ? 'bg-success' : 'bg-secondary'}" 
 
-                               th:text="${proyecto.estado == 1 ? 'Activo' : 'Inactivo'}">Estado</span> 
+        .table thead {
 
-                     </td> 
+            background-color: var(--main-dark) !important;
 
-                     <!-- La lógica de fechas es correcta, se deja como está --> 
+            color: var(--text-light) !important;
 
-                     <td th:text="${#dates.format(proyecto.fecha_inicio, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_inicio != null}">Fecha Inicio</td> 
+        }
 
-                     <td th:if="${proyecto.fecha_inicio == null}">-</td> 
 
-                     <td th:text="${#dates.format(proyecto.fecha_fin, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_fin != null}">Fecha Fin</td> 
 
-                     <td th:if="${proyecto.fecha_fin == null}">-</td> 
+        .table th {
 
-                     <!-- La lógica del presupuesto es correcta, se deja como está --> 
+            font-weight: 600 !important;
 
-                     <td th:text="${#numbers.formatCurrency(proyecto.presupuesto)}" th:if="${proyecto.presupuesto != null}">Presupuesto</td> 
+            padding: 14px !important;
 
-                     <td th:if="${proyecto.presupuesto == null}">-</td> 
+            text-align: left !important;
 
-                     <!-- CORREGIDO: Se accede a la propiedad 'nombre_municipio' del objeto 'id_municipio' --> 
+            font-size: 0.95rem !important;
 
-                     <td th:text="${proyecto.id_municipio != null ? proyecto.id_municipio.nombre_municipio : '-'}">Municipio</td> 
+        }
 
-                     <td> 
 
-                         <a th:href="@{/proyectos/view/{id}(id=${proyecto.id_proyecto})}" class="btn btn-info btn-sm">Ver</a> 
 
-                         <a th:href="@{/proyectos/edit/{id}(id=${proyecto.id_proyecto})}" class="btn btn-warning btn-sm">Editar</a> 
+        .table td {
 
-                         <a th:href="@{/proyectos/delete/{id}(id=${proyecto.id_proyecto})}" class="btn btn-danger btn-sm">Eliminar</a> 
+            padding: 12px 14px !important;
 
-                     </td> 
+            vertical-align: middle !important;
 
-                 </tr> 
+            color: var(--main-dark) !important;
 
-                 <tr th:if="${proyecto.totalElements == 0}"> 
+            font-size: 0.9rem !important;
 
-                     <td colspan="8" class="text-center">No hay proyectos registrados.</td> 
+            border-top: 1px solid var(--text-soft) !important;
 
-                 </tr> 
+        }
 
-             </tbody> 
 
-         </table> 
 
-     </div> 
+        /* Alternar filas */
 
+        .table tbody tr:nth-child(even) {
 
+            background-color: #f9fbfd !important;
 
-     <nav th:if="${pageNumbers}"> 
+        }
 
-         <ul class="pagination justify-content-center"> 
 
-             <li th:each="pageNum : ${pageNumbers}" class="page-item" 
 
-                 th:classappend="${pageNum == proyecto.number + 1} ? 'active'"> 
+        .table tbody tr:hover {
 
-                 <a class="page-link" 
+            background-color: #edf3fa !important;
 
-                    th:href="@{/proyectos(page=${pageNum},size=${proyecto.size})}" 
+            transition: all 0.2s ease-in-out !important;
 
-                    th:text="${pageNum}"></a> 
+        }
 
-             </li> 
 
-         </ul> 
 
-     </nav> 
+        /* ===== Botones ===== */
 
+        .btn {
 
+            font-weight: 500 !important;
 
- </section> 
+            border-radius: 6px !important;
 
- </body> 
+            border: none !important;
 
- </html>
+            padding: 7px 14px !important;
+
+            font-size: 0.9rem !important;
+
+            transition: all 0.2s ease !important;
+
+            box-shadow: 0 2px 6px var(--shadow) !important;
+
+        }
+
+
+
+        .btn:hover {
+
+            transform: translateY(-2px) !important;
+
+        }
+
+
+
+        /* Colores */
+
+        .btn-success {
+
+            background-color: var(--success) !important;
+
+            color: var(--white) !important;
+
+        }
+
+        .btn-info {
+
+            background-color: var(--primary-accent) !important;
+
+            color: var(--white) !important;
+
+        }
+
+        .btn-warning {
+
+            background-color: var(--secondary-accent) !important;
+
+            color: var(--white) !important;
+
+        }
+
+        .btn-danger {
+
+            background-color: var(--danger) !important;
+
+            color: var(--white) !important;
+
+        }
+
+
+
+        /* Contenedor para los botones de acción */
+
+        .btn-actions {
+
+            display: flex !important;
+
+            gap: 8px !important; /* Espacio de 8px entre los botones */
+
+            align-items: center !important;
+
+        }
+
+
+
+        /* ===== Paginación ===== */
+
+        .pagination .page-item a {
+
+            color: var(--main-dark) !important;
+
+            font-weight: 500 !important;
+
+            border-radius: 6px !important;
+
+            margin: 0 3px !important;
+
+            border: 1px solid #dee2e6 !important;
+
+        }
+
+
+
+        .pagination .page-item a:hover {
+
+            background-color: var(--text-soft) !important;
+
+            color: var(--white) !important;
+
+        }
+
+
+
+        .pagination .page-item.active a {
+
+            background-color: var(--primary-accent) !important;
+
+            border-color: var(--primary-accent) !important;
+
+            color: var(--white) !important;
+
+            font-weight: 600 !important;
+
+        }
+
+
+
+        /* Estilo para los badges */
+
+        .badge {
+
+            display: inline-block !important;
+
+            padding: 0.35em 0.65em !important;
+
+            font-size: 0.75em !important;
+
+            font-weight: 700 !important;
+
+            line-height: 1 !important;
+
+            color: #fff !important;
+
+            text-align: center !important;
+
+            white-space: nowrap !important;
+
+            vertical-align: baseline !important ;
+
+            border-radius: 0.25rem !important;
+
+        }
+
+        .bg-success {
+
+            background-color: var(--success) !important;
+
+        }
+
+        .bg-secondary {
+
+            background-color: var(--text-soft) !important;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<section layout:fragment="content">
+
+    <div th:if="${msg != null }">
+
+        <script>
+
+            swal({
+
+            title:"Confirmación",
+
+            text: '[[ ${msg} ]]',
+
+            icon: "success"
+
+            });
+
+        </script>
+
+    </div>
+
+    <div th:if="${error != null }">
+
+        <script>
+
+            swal({
+
+            title:"Error",
+
+            text: '[[ ${error} ]]',
+
+            icon: "error"
+
+            });
+
+        </script>
+
+    </div>
+
+
+
+    <h2>Listado de proyectos</h2>
+
+
+
+    <div class="mb-3">
+
+        <a th:href="@{/proyectos/create}" class="btn btn-success">Nuevo Proyecto</a>
+
+    </div>
+
+
+
+    <div class="table-container">
+
+        <table class="table table-bordered">
+
+            <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Nombre del Proyecto</th>
+
+                <th>Estado</th>
+
+                <th>Fecha Inicio</th>
+
+                <th>Fecha Fin</th>
+
+                <th>Presupuesto</th>
+
+                <th>Municipio</th>
+
+                <th>Acciones</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+                <tr th:each="proyecto : ${proyecto.content}">
+
+                    <td th:text="${proyecto.id_proyecto}">ID</td>
+
+                    <td th:text="${proyecto.nombre}">Nombre</td>
+
+                    <td>
+
+                        <span class="badge" 
+
+                              th:classappend="${proyecto.estado == 1 ? 'bg-success' : 'bg-secondary'}"
+
+                              th:text="${proyecto.estado == 1 ? 'Activo' : 'Inactivo'}">Estado</span>
+
+                    </td>
+
+                    <td th:text="${#dates.format(proyecto.fecha_inicio, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_inicio != null}">Fecha Inicio</td>
+
+                    <td th:if="${proyecto.fecha_inicio == null}">-</td>
+
+                    <td th:text="${#dates.format(proyecto.fecha_fin, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_fin != null}">Fecha Fin</td>
+
+                    <td th:if="${proyecto.fecha_fin == null}">-</td>
+
+                    <td th:text="${#numbers.formatCurrency(proyecto.presupuesto)}" th:if="${proyecto.presupuesto != null}">Presupuesto</td>
+
+                    <td th:if="${proyecto.presupuesto == null}">-</td>
+
+                    <td th:text="${proyecto.id_municipio != null ? proyecto.id_municipio.nombre_municipio : '-'}">Municipio</td>
+
+                    <td>
+
+                        <div class="btn-actions">
+
+                            <a th:href="@{/proyectos/view/{id}(id=${proyecto.id_proyecto})}" class="btn btn-info btn-sm">Ver</a>
+
+                            <a th:href="@{/proyectos/edit/{id}(id=${proyecto.id_proyecto})}" class="btn btn-warning btn-sm">Editar</a>
+
+                            <a th:href="@{/proyectos/delete/{id}(id=${proyecto.id_proyecto})}" class="btn btn-danger btn-sm">Eliminar</a>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+                <tr th:if="${proyecto.totalElements == 0}">
+
+                    <td colspan="8" class="text-center">No hay proyectos registrados.</td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <nav th:if="${pageNumbers}">
+
+        <ul class="pagination justify-content-center">
+
+            <li th:each="pageNum : ${pageNumbers}" class="page-item"
+
+                th:classappend="${pageNum == proyecto.number + 1} ? 'active'">
+
+                <a class="page-link"
+
+                   th:href="@{/proyectos(page=${pageNum},size=${proyecto.size})}"
+
+                   th:text="${pageNum}"></a>
+
+            </li>
+
+        </ul>
+
+    </nav>
+
+</section>
+
+</body>
+
+</html>

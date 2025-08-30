@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.*;
 public class DatabaseWebSecurity {
 
     @Bean
-public UserDetailsManager customUser(DataSource dataSource) {
+ public UserDetailsManager customUser(DataSource dataSource) {
     JdbcUserDetailsManager users = new JdbcUserDetailsManager(dataSource);
     users.setUsersByUsernameQuery("SELECT login, clave,status as enabled FROM usuario WHERE login = ?");
     users.setAuthoritiesByUsernameQuery("SELECT u.login, r.nombre as authority FROM usuario_rol ur " +
@@ -45,7 +45,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
             .requestMatchers("/documentos/**").hasAuthority("Doc")
             .requestMatchers("/municipios/**").hasAuthority("admin")
             
-            // Cualquier otra ruta requiere autenticación
+        
             .anyRequest().authenticated()
         )
         // Login personalizado
@@ -55,7 +55,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         )
         // Página personalizada cuando no tiene acceso
         .exceptionHandling(ex -> ex
-            .accessDeniedPage("/acceso-denegado")  // 👈 Redirige aquí si no tiene permisos
+            .accessDeniedPage("/acceso-denegado")  
         );
 
     return http.build();

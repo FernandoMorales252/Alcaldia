@@ -11,7 +11,7 @@ import com.SysGroup.Alcaldia.Modelos.Cargo;
 public interface ICargoService {
 
 
-     Page<Cargo> buscarTodos(Pageable pageable);
+    Page<Cargo> buscarTodos(Pageable pageable);
 
     List<Cargo> obtenerTodos();
 

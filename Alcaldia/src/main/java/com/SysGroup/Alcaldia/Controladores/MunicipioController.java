@@ -28,10 +28,11 @@ public class MunicipioController {
      @Autowired
     private MunicipioService municipioService;
 
+    //Listado//
     @GetMapping
     public String index(Model model,
-                        @RequestParam("page") Optional<Integer> page,
-                        @RequestParam("size") Optional<Integer> size) {
+    @RequestParam("page") Optional<Integer> page,
+    @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
         Pageable pageable = PageRequest.of(currentPage, pageSize);    
@@ -57,6 +58,7 @@ public class MunicipioController {
        return "municipio/mant";
     }
  
+    //editar//
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         Municipio municipio = municipioService.buscaPorId(id).orElseThrow();
@@ -65,7 +67,7 @@ public class MunicipioController {
         return "municipio/mant";
     }
 
-    //--Lectura--//
+    //Lectura//
     @GetMapping("/view/{id}")
     public String view(@PathVariable Integer id, Model model) {
         Municipio municipio = municipioService.buscaPorId(id).orElseThrow();
@@ -74,7 +76,7 @@ public class MunicipioController {
         return "municipio/mant";
     }
 
-    //--eliminar--//
+    //eliminar//
     @GetMapping("/delete/{id}")
     public String deleteConfirm(@PathVariable Integer id, Model model) {
          Municipio municipio = municipioService.buscaPorId(id).orElseThrow();
@@ -84,6 +86,8 @@ public class MunicipioController {
     }
 
     //--procesar post segun accion--//
+
+    //accion create//
     @PostMapping("/create")
     public String saveNuevo(@ModelAttribute Municipio municipio, BindingResult result,
                            RedirectAttributes redirect, Model model) {
@@ -96,6 +100,7 @@ public class MunicipioController {
         return "redirect:/municipios";
     }
 
+    //accion edit//
     @PostMapping("/edit")
     public String saveEdit(@ModelAttribute Municipio municipio, BindingResult result,
                           RedirectAttributes redirect, Model model) {
@@ -108,19 +113,28 @@ public class MunicipioController {
         return "redirect:/municipios";
     }
 
+    //accion delete//
    @PostMapping("/delete")
     public String deleteMunicipio(@ModelAttribute Municipio municipio,RedirectAttributes redirect) 
+ {
+    try
+     {
+        municipioService.eliminarMunicipio(municipio.getId_municipio()); 
+        redirect.addFlashAttribute("msg", "Municipio eliminado correctamente");
+     } 
+       catch (Exception e) 
     {
-       try{municipioService.eliminarMunicipio(municipio.getId_municipio()); // Cambiado a getId_municipio()
-        redirect.addFlashAttribute("msg", "Municipio eliminado correctamente");} 
-catch (Exception e) {
-    if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
-        redirect.addFlashAttribute("error", "Este municipio no se puede eliminar porque se está usando en otro lugar.");
-    } else {
-redirect.addFlashAttribute("error", "Ocurrió un error al intentar eliminar el municipio.");
-}
-}
-return "redirect:/municipios";}
+     if (e.getCause() instanceof SQLIntegrityConstraintViolationException) 
+     {
+     redirect.addFlashAttribute("error", "Este municipio no se puede eliminar porque se está usando en otro lugar.");
+     }  
+     else 
+     {
+     redirect.addFlashAttribute("error", "Ocurrió un error al intentar eliminar el municipio.");
+     }
+    }
+    return "redirect:/municipios";
+ }
 
 }
 

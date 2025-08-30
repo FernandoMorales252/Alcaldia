@@ -2,15 +2,14 @@ package com.SysGroup.Alcaldia.Modelos;
 
 import java.math.*;
 import java.util.*;
-
 import org.springframework.format.annotation.DateTimeFormat;
-
 import jakarta.persistence.*;
 
+//Modelo de la entidad proyecto//
 @Entity
 @Table(name = "Proyecto")
 public class Proyecto {
-     @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_proyecto;
 
@@ -19,15 +18,14 @@ public class Proyecto {
     @Column(columnDefinition = "TEXT")
     private String descripcion;
 
-  @Temporal(TemporalType.DATE)
-@DateTimeFormat(pattern = "yyyy-MM-dd")
-private Date fecha_inicio;
+    @Temporal(TemporalType.DATE)
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date fecha_inicio;
 
-@Temporal(TemporalType.DATE)
-@DateTimeFormat(pattern = "yyyy-MM-dd")
-private Date fecha_fin;
-
-    
+   @Temporal(TemporalType.DATE)
+   @DateTimeFormat(pattern = "yyyy-MM-dd")
+   private Date fecha_fin;
+   
     private int estado;
 
     private String imagen_url;

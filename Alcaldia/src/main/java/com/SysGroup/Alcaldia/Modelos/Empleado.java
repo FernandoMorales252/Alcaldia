@@ -1,20 +1,24 @@
 package com.SysGroup.Alcaldia.Modelos;
-import jakarta.persistence.*;
 
+import jakarta.persistence.*;
 import java.time.LocalDate;
 import jakarta.validation.constraints.*;
 import org.springframework.format.annotation.DateTimeFormat;
 
+//Modelo de la entidad empleado//
 @Entity
 @Table(name = "empleado")
 public class Empleado {
-     @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_empleado;
-@NotBlank(message = "El nombre no puede estar vacío")
+
+    @NotBlank(message = "El nombre no puede estar vacío")
     private String nombre;
+
     @NotBlank(message = "El apellido no puede estar vacío")
     private String apellido;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     @NotNull(message = "La fecha de contratación no puede estar vacía")
     private LocalDate  fecha_contratacion;
@@ -32,6 +36,7 @@ public class Empleado {
     @NotNull(message = "El municipio no puede estar vacío")
     private Municipio municipio;
 
+    //Mostrar si el empleado está activo o inactivo
     public enum EstadoEmpleado {
         activo,
         inactivo

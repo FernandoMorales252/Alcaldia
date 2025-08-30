@@ -1,4 +1,5 @@
 package com.SysGroup.Alcaldia.Controladores;
+
 import com.SysGroup.Alcaldia.Modelos.Cargo;
 import com.SysGroup.Alcaldia.Servicios.Interfaces.ICargoService;
 
@@ -27,13 +28,14 @@ import org.springframework.data.domain.Page;
 @RequestMapping("/cargo")
 public class CargoController {
 
-     @Autowired
+    @Autowired
     private ICargoService cargoService;
 
-        @GetMapping
+    //paginacion//
+    @GetMapping
     public String index(Model model,
-                        @RequestParam("page") Optional<Integer> page,
-                        @RequestParam("size") Optional<Integer> size) {
+    @RequestParam("page") Optional<Integer> page,
+    @RequestParam("size") Optional<Integer> size) {
 
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
@@ -45,7 +47,7 @@ public class CargoController {
         int totalPages = cargos.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed().collect(Collectors.toList());
+            .boxed().collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
@@ -59,6 +61,7 @@ public class CargoController {
         model.addAttribute("action", "create");
         return "cargo/mant";
     }
+    
     // ----------- Editar --------------
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable("id") Integer id_cargo, Model model) {

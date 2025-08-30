@@ -1,6 +1,7 @@
 package com.SysGroup.Alcaldia.Modelos;
 import jakarta.persistence.*;
 
+//Modelo de la entidad Inventario//
 @Entity
 @Table(name = "Inventario")
 public class Inventario {
@@ -55,6 +56,7 @@ public class Inventario {
         return id_municipio;
     }
     public void setId_municipio(Municipio id_municipio) {
-        this.id_municipio = id_municipio;}
+        this.id_municipio = id_municipio;
+    }
 
 }

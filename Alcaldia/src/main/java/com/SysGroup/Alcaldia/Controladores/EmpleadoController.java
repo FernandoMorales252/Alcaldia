@@ -70,6 +70,7 @@ public class EmpleadoController {
 
         return "empleado/index";
     }
+
     // ----------- Crear --------------
     @GetMapping("/create")
     public String create(Model model) {
@@ -79,6 +80,7 @@ public class EmpleadoController {
         model.addAttribute("action", "create");
         return "empleado/mant";
     }
+
     // ----------- Editar --------------
     @GetMapping("/edit/{id_empleado}")
     public String edit(@PathVariable Integer id_empleado, Model model) {
@@ -89,6 +91,7 @@ public class EmpleadoController {
         model.addAttribute("action", "edit");
         return "empleado/mant";
     }
+
     // ----------- Ver (solo lectura) --------------
     @GetMapping("/view/{id_empleado}")
     public String view(@PathVariable Integer id_empleado, Model model) {
@@ -99,6 +102,7 @@ public class EmpleadoController {
         model.addAttribute("action", "view");
         return "empleado/mant";
     }
+
     // ----------- Eliminar (confirmación) --------------
     @GetMapping("/delete/{id_empleado}")
     public String deleteConfirm(@PathVariable Integer id_empleado, Model model) {
@@ -109,6 +113,7 @@ public class EmpleadoController {
         model.addAttribute("action", "delete");
         return "empleado/mant";
     }
+
     // ----------- Procesar POST para crear un nuevo empleado --------------
     @PostMapping("/create")
     public String saveNuevo(@Valid @ModelAttribute Empleado empleado, BindingResult result,
@@ -123,6 +128,7 @@ public class EmpleadoController {
         redirect.addFlashAttribute("msg", "Empleado creado correctamente");
         return "redirect:/empleados";
     }
+    
     // ----------- Procesar POST para editar un empleado existente --------------
     @PostMapping("/edit")
     public String saveEditado(@ModelAttribute Empleado empleado, BindingResult result,

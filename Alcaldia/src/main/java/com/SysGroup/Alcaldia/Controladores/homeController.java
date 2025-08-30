@@ -29,7 +29,7 @@ public class homeController {
 
      @GetMapping("/access-denied")
     public String accessDenied() {
-        return "access-denied"; // nombre del template Thymeleaf
+        return "access-denied"; 
     }
 
 }

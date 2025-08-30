@@ -2,6 +2,7 @@ package com.SysGroup.Alcaldia.Modelos;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
+//Modelo de la entidad rol//
 @Entity
 public class Rol {
     @Id
@@ -11,6 +12,7 @@ public class Rol {
     @NotBlank(message = "El nombre del rol no puede estar vacío")
     private String     Nombre;
 
+    //Getters y Setters//
     public Integer getId() {
         return Id;
     }

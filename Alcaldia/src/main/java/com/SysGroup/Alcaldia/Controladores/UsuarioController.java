@@ -75,7 +75,7 @@ public class UsuarioController {
             return "usuarios/create";
         }
 
-    String password = passwordEncoder.encode(usuario.getClave());
+     String password = passwordEncoder.encode(usuario.getClave());
       Rol perfil = new Rol ();
       perfil.setId(rol);
 

@@ -1,6 +1,8 @@
 package com.SysGroup.Alcaldia.Modelos;
 import jakarta.persistence.*;
 
+
+//Modelo de la entidad cargo//
 @Entity
 @Table(name = "cargo")
 public class Cargo {
@@ -8,9 +10,12 @@ public class Cargo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_cargo;
+
     private String nombre_cargo;
+
     private String descripcion;
 
+ //Metodos Get y Set
     public Integer getId_cargo() {
         return id_cargo;
     }

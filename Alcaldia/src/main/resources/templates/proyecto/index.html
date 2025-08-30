@@ -1,501 +1,266 @@
 <!DOCTYPE html>
 
 <html xmlns:th="http://www.thymeleaf.org"
-
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-
       layout:decorate="~{layouts/_MainLayout}">
-
 <head>
-
     <title layout:fragment="title">Listado de proyectos</title>
 
     <style>
 
         /* ===== Paleta base ===== */
-
         :root {
-
             --main-dark: #2C3E50 !important;
-
             --primary-accent: #2E86C1 !important;
-
             --secondary-accent: #E67E22 !important;
-
             --success: #27AE60 !important;
-
             --danger: #C0392B !important;
-
             --text-light: #ECF0F1 !important;
-
             --text-soft: #BDC3C7 !important;
-
             --background: #F4F6F9 !important;
-
             --white: #ffffff !important;
-
             --shadow: rgba(0,0,0,0.08) !important;
-
         }
-
-
 
         /* ===== General ===== */
-
         body {
-
             background-color: var(--background) !important;
-
             font-family: "Segoe UI", "Roboto", sans-serif !important;
-
             color: var(--main-dark) !important;
-
             font-size: 15px !important;
-
             line-height: 1.5 !important;
-
         }
-
-
 
         /* ===== Títulos ===== */
-
         h2 {
-
             font-size: 2rem !important;
-
             color: var(--main-dark) !important;
-
             font-weight: 600 !important;
-
             padding-bottom: 10px !important;
-
             margin-bottom: 20px !important;
-
             border-bottom: 3px solid var(--primary-accent) !important;
-
         }
-
-
 
         /* ===== Contenedor tabla ===== */
-
         .table-container {
-
             background-color: var(--white) !important;
-
             padding: 20px !important;
-
             border-radius: 10px !important;
-
             box-shadow: 0 6px 14px var(--shadow) !important;
-
             overflow-x: auto !important;
-
         }
-
-
 
         /* ===== Tabla ===== */
-
         .table {
-
             width: 100% !important;
-
             border-collapse: collapse !important;
-
         }
-
-
 
         .table thead {
-
             background-color: var(--main-dark) !important;
-
             color: var(--text-light) !important;
-
         }
-
-
 
         .table th {
-
             font-weight: 600 !important;
-
             padding: 14px !important;
-
             text-align: left !important;
-
             font-size: 0.95rem !important;
-
         }
-
-
 
         .table td {
-
             padding: 12px 14px !important;
-
             vertical-align: middle !important;
-
             color: var(--main-dark) !important;
-
             font-size: 0.9rem !important;
-
             border-top: 1px solid var(--text-soft) !important;
-
         }
-
-
 
         /* Alternar filas */
-
         .table tbody tr:nth-child(even) {
-
             background-color: #f9fbfd !important;
-
         }
-
-
 
         .table tbody tr:hover {
-
             background-color: #edf3fa !important;
-
             transition: all 0.2s ease-in-out !important;
-
         }
-
-
 
         /* ===== Botones ===== */
-
         .btn {
-
             font-weight: 500 !important;
-
             border-radius: 6px !important;
-
             border: none !important;
-
             padding: 7px 14px !important;
-
             font-size: 0.9rem !important;
-
             transition: all 0.2s ease !important;
-
             box-shadow: 0 2px 6px var(--shadow) !important;
-
         }
-
-
 
         .btn:hover {
-
             transform: translateY(-2px) !important;
-
         }
 
-
-
         /* Colores */
-
         .btn-success {
-
             background-color: var(--success) !important;
-
             color: var(--white) !important;
-
         }
 
         .btn-info {
-
             background-color: var(--primary-accent) !important;
-
             color: var(--white) !important;
-
         }
 
         .btn-warning {
-
             background-color: var(--secondary-accent) !important;
-
             color: var(--white) !important;
-
         }
 
         .btn-danger {
-
             background-color: var(--danger) !important;
-
             color: var(--white) !important;
-
         }
-
-
 
         /* Contenedor para los botones de acción */
-
         .btn-actions {
-
             display: flex !important;
-
             gap: 8px !important; /* Espacio de 8px entre los botones */
-
             align-items: center !important;
-
         }
-
-
 
         /* ===== Paginación ===== */
-
         .pagination .page-item a {
-
             color: var(--main-dark) !important;
-
             font-weight: 500 !important;
-
             border-radius: 6px !important;
-
             margin: 0 3px !important;
-
             border: 1px solid #dee2e6 !important;
-
         }
-
-
 
         .pagination .page-item a:hover {
-
             background-color: var(--text-soft) !important;
-
             color: var(--white) !important;
-
         }
-
-
 
         .pagination .page-item.active a {
-
             background-color: var(--primary-accent) !important;
-
             border-color: var(--primary-accent) !important;
-
             color: var(--white) !important;
-
             font-weight: 600 !important;
-
         }
 
-
-
         /* Estilo para los badges */
-
         .badge {
-
             display: inline-block !important;
-
             padding: 0.35em 0.65em !important;
-
             font-size: 0.75em !important;
-
             font-weight: 700 !important;
-
             line-height: 1 !important;
-
             color: #fff !important;
-
             text-align: center !important;
-
             white-space: nowrap !important;
-
             vertical-align: baseline !important ;
-
             border-radius: 0.25rem !important;
-
         }
 
         .bg-success {
-
             background-color: var(--success) !important;
-
         }
 
         .bg-secondary {
-
             background-color: var(--text-soft) !important;
-
         }
-
     </style>
 
 </head>
 
 <body>
-
 <section layout:fragment="content">
-
     <div th:if="${msg != null }">
-
         <script>
-
             swal({
-
             title:"Confirmación",
-
             text: '[[ ${msg} ]]',
-
             icon: "success"
-
             });
-
         </script>
-
     </div>
 
     <div th:if="${error != null }">
-
         <script>
-
             swal({
-
             title:"Error",
-
             text: '[[ ${error} ]]',
-
             icon: "error"
-
             });
-
         </script>
-
     </div>
-
-
 
     <h2>Listado de proyectos</h2>
 
-
-
     <div class="mb-3">
-
         <a th:href="@{/proyectos/create}" class="btn btn-success">Nuevo Proyecto</a>
-
     </div>
 
-
-
     <div class="table-container">
-
         <table class="table table-bordered">
-
             <thead>
-
             <tr>
-
                 <th>Nombre del Proyecto</th>
-
                 <th>Estado</th>
-
                 <th>Fecha Inicio</th>
-
                 <th>Fecha Fin</th>
-
                 <th>Presupuesto</th>
-
                 <th>Municipio</th>
-
                 <th>Acciones</th>
-
             </tr>
 
             </thead>
-
             <tbody>
-
                 <tr th:each="proyecto : ${proyecto.content}">
-
-                    
-
                     <td th:text="${proyecto.nombre}">Nombre</td>
-
                     <td>
-
                         <span class="badge" 
-
                               th:classappend="${proyecto.estado == 1 ? 'bg-success' : 'bg-secondary'}"
-
-                              th:text="${proyecto.estado == 1 ? 'Activo' : 'Inactivo'}">Estado</span>
-
+                              th:text="${proyecto.estado == 1 ? 'En proceso' : 'Finalizado'}">Estado</span>
                     </td>
-
                     <td th:text="${#dates.format(proyecto.fecha_inicio, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_inicio != null}">Fecha Inicio</td>
-
                     <td th:if="${proyecto.fecha_inicio == null}">-</td>
-
                     <td th:text="${#dates.format(proyecto.fecha_fin, 'dd/MM/yyyy')}" th:if="${proyecto.fecha_fin != null}">Fecha Fin</td>
-
                     <td th:if="${proyecto.fecha_fin == null}">-</td>
-
                     <td th:text="${#numbers.formatCurrency(proyecto.presupuesto)}" th:if="${proyecto.presupuesto != null}">Presupuesto</td>
-
                     <td th:if="${proyecto.presupuesto == null}">-</td>
-
                     <td th:text="${proyecto.id_municipio != null ? proyecto.id_municipio.nombre_municipio : '-'}">Municipio</td>
-
                     <td>
 
                         <div class="btn-actions">
-
                             <a th:href="@{/proyectos/view/{id}(id=${proyecto.id_proyecto})}" class="btn btn-info btn-sm">Ver</a>
-
                             <a th:href="@{/proyectos/edit/{id}(id=${proyecto.id_proyecto})}" class="btn btn-warning btn-sm">Editar</a>
-
                             <a th:href="@{/proyectos/delete/{id}(id=${proyecto.id_proyecto})}" class="btn btn-danger btn-sm">Eliminar</a>
-
                         </div>
-
                     </td>
-
                 </tr>
 
                 <tr th:if="${proyecto.totalElements == 0}">
-
                     <td colspan="8" class="text-center">No hay proyectos registrados.</td>
-
                 </tr>
 
             </tbody>
-
         </table>
-
     </div>
 
-
-
     <nav th:if="${pageNumbers}">
-
         <ul class="pagination justify-content-center">
-
             <li th:each="pageNum : ${pageNumbers}" class="page-item"
-
                 th:classappend="${pageNum == proyecto.number + 1} ? 'active'">
-
                 <a class="page-link"
-
                    th:href="@{/proyectos(page=${pageNum},size=${proyecto.size})}"
-
                    th:text="${pageNum}"></a>
-
             </li>
-
         </ul>
-
     </nav>
 
 </section>
-
 </body>
-
 </html>

@@ -1,12 +1,10 @@
 package com.SysGroup.Alcaldia.Modelos;
 
 import java.util.*;
-
 import org.springframework.format.annotation.DateTimeFormat;
-
 import jakarta.persistence.*;
 
-
+//Modelo de la entidad Documento//
 @Entity
 @Table(name = "documento_archivo")
 public class DocumentoArchivo {

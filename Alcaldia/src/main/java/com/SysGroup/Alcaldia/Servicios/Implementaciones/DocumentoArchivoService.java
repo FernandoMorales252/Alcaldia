@@ -42,7 +42,6 @@ public class DocumentoArchivoService implements IDocumentoArchivoService  {
         documentoArchivoRepository.deleteById(id);
     }
 
-    // Nuevos métodos para la validación de unicidad
     public boolean existsByNumeroDocumento(String numeroDocumento) {
         return documentoArchivoRepository.existsByNumeroDocumento(numeroDocumento);
     }

@@ -10,9 +10,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-
 import org.springframework.web.bind.annotation.GetMapping;
-
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,10 +38,11 @@ public class DocumentoArchivoController {
     @Autowired
     private MunicipioService municipioService;
 
+    //paginacion//
     @GetMapping
     public String index(Model model,
-                        @RequestParam("page") Optional<Integer> page,
-                        @RequestParam("size") Optional<Integer> size) {
+        @RequestParam("page") Optional<Integer> page,
+        @RequestParam("size") Optional<Integer> size) {
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
         Pageable pageable = PageRequest.of(currentPage, pageSize);    
@@ -54,13 +53,14 @@ public class DocumentoArchivoController {
         int totalPages = documento.getTotalPages();
         if (totalPages > 0) {
             List<Integer> pageNumbers = IntStream.rangeClosed(1, totalPages)
-                    .boxed()
-                    .collect(Collectors.toList());
+            .boxed()
+            .collect(Collectors.toList());
             model.addAttribute("pageNumbers", pageNumbers);
         }
         return "documento/index";
     }
 
+    //crear//
     @GetMapping("/create")
     public String create(Model model) {
         model.addAttribute("documentoArchivo", new DocumentoArchivo());
@@ -70,6 +70,7 @@ public class DocumentoArchivoController {
         return "documento/mant";
     }
 
+    //editar//
     @GetMapping("/edit/{id}")
     public String edit(@PathVariable Integer id, Model model) {
         DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
@@ -80,6 +81,7 @@ public class DocumentoArchivoController {
         return "documento/mant";
     }
 
+    //lectura//
     @GetMapping("/view/{id}")
     public String view(@PathVariable Integer id, Model model) {
         DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
@@ -90,6 +92,7 @@ public class DocumentoArchivoController {
         return "documento/mant";
     }
 
+    //eliminar//
     @GetMapping("/delete/{id}")
     public String deleteConfirm(@PathVariable Integer id, Model model) {
         DocumentoArchivo documentoArchivo = documentoArchivoService.buscarPorId(id);
@@ -100,22 +103,25 @@ public class DocumentoArchivoController {
         return "documento/mant";
     }
 
+    //Procesar segun accion//
+
+    //Accion de create//
     @PostMapping("/create")
     public String saveNuevo(@RequestParam("municipioId") Integer municipioId,
-                            @RequestParam("tipoDocumentoId") Integer tipoDocumentoId,
-                            @ModelAttribute DocumentoArchivo documentoArchivo, 
-                            BindingResult result,
-                            RedirectAttributes redirect, Model model) {
+    @RequestParam("tipoDocumentoId") Integer tipoDocumentoId,
+    @ModelAttribute DocumentoArchivo documentoArchivo, 
+    BindingResult result,
+    RedirectAttributes redirect, Model model) {
         
-        // Asignar los objetos de relaciones
+       
         Municipio municipio = municipioService.buscarMunicipioPorId(municipioId);
         Tipo_DocumentoArchivo tipoDocumento = tipoDocumentoArchivoService.buscarTipoDocumentoPorId(tipoDocumentoId);
         documentoArchivo.setMunicipio(municipio);
         documentoArchivo.setTipoDocumento(tipoDocumento);
         
-        // Validación de unicidad
+        // Validación de codigo de documento
         if (documentoArchivoService.existsByNumeroDocumento(documentoArchivo.getNumeroDocumento())) {
-            model.addAttribute("error", "El número de documento ya existe.");
+            model.addAttribute("error", "El código de documento ya existe.");
             model.addAttribute("action", "create");
             model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
             model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
@@ -127,23 +133,24 @@ public class DocumentoArchivoController {
         return "redirect:/documentos";
     }
 
+
+    //accion de edit//
     @PostMapping("/edit")
     public String saveEdit(@RequestParam("municipioId") Integer municipioId,
-                           @RequestParam("tipoDocumentoId") Integer tipoDocumentoId,
-                           @ModelAttribute DocumentoArchivo documentoArchivo, 
-                           BindingResult result,
-                           RedirectAttributes redirect, Model model) {
-        
-        // Asignar los objetos de relaciones
+    @RequestParam("tipoDocumentoId") Integer tipoDocumentoId,
+    @ModelAttribute DocumentoArchivo documentoArchivo, 
+    BindingResult result,
+    RedirectAttributes redirect, Model model) {
+    
         Municipio municipio = municipioService.buscarMunicipioPorId(municipioId);
         Tipo_DocumentoArchivo tipoDocumento = tipoDocumentoArchivoService.buscarTipoDocumentoPorId(tipoDocumentoId);
         documentoArchivo.setMunicipio(municipio);
         documentoArchivo.setTipoDocumento(tipoDocumento);
-        
-        // Validación de unicidad para editar, excluyendo el documento actual
+
+        // Validación de código de documento
         Optional<DocumentoArchivo> existingDoc = documentoArchivoService.findByNumeroDocumento(documentoArchivo.getNumeroDocumento());
         if (existingDoc.isPresent() && !existingDoc.get().getIdDocumento().equals(documentoArchivo.getIdDocumento())) {
-            model.addAttribute("error", "El número de documento ya existe.");
+            model.addAttribute("error", "Este código de documento ya existe.");
             model.addAttribute("action", "edit");
             model.addAttribute("tipos_documentos", tipoDocumentoArchivoService.obtenerTodos());
             model.addAttribute("municipios", municipioService.obtenerTodosLosMunicipios());
@@ -155,6 +162,7 @@ public class DocumentoArchivoController {
         return "redirect:/documentos";
     }
 
+    //accion de delete//
     @PostMapping("/delete")
     public String delete(@ModelAttribute DocumentoArchivo documentoArchivo,
                          RedirectAttributes redirect) {

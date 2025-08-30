@@ -3,6 +3,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.*;
 
+//Modelo de la entidad Tipo_DocumentoArchivo//
 @Entity
 @Table(name = "tipodocumentoarchivo")
 public class Tipo_DocumentoArchivo {
@@ -10,10 +11,9 @@ public class Tipo_DocumentoArchivo {
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Integer id_tipo_documento;
     
-    
     private String nombre_tipo;
-    
 
+    //Getters y Setters//
     public Integer getId_tipo_documento() {
         return id_tipo_documento;
     }

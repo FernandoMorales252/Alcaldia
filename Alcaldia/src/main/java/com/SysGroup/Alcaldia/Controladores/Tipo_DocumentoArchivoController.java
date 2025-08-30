@@ -14,10 +14,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.SysGroup.Alcaldia.Servicios.Interfaces.ITipo_DocumentoArchivoService;
 import com.SysGroup.Alcaldia.Modelos.Tipo_DocumentoArchivo;
 
-
-
-
-
 @Controller
 @RequestMapping("/tipodocumentoarchivo") //Esta linea es la que mapea las peticiones a este controlador
 public class Tipo_DocumentoArchivoController {
@@ -28,8 +24,8 @@ public class Tipo_DocumentoArchivoController {
     //paginado
    @GetMapping
     public String index(Model model,
-                        @RequestParam("page") Optional<Integer> page,
-                        @RequestParam("size") Optional<Integer> size) {
+    @RequestParam("page") Optional<Integer> page,
+    @RequestParam("size") Optional<Integer> size) {
 
         int currentPage = page.orElse(1) - 1;
         int pageSize = size.orElse(5);
@@ -45,7 +41,7 @@ public class Tipo_DocumentoArchivoController {
             model.addAttribute("pageNumbers", pageNumbers);
         }
 
-        return "tipodocumentoarchivo/index"; //Esta seccion es para el paginado
+        return "tipodocumentoarchivo/index"; 
     }
 
     //crear
@@ -113,7 +109,6 @@ public class Tipo_DocumentoArchivoController {
     }
     catch (Exception e) 
          {
-            // Captura la excepción específica de la base de datos
             if (e.getCause() instanceof SQLIntegrityConstraintViolationException) {
                 redirect.addFlashAttribute("error", "Este tipo no se puede eliminar porque se está usando en otro lugar.");
             } else {
